@@ -3,12 +3,20 @@ import {join} from 'path';
 
 function createWindow () {
   const mainWindow = new BrowserWindow({
-    width: 800,
-    height: 600,
+    icon: __dirname + './static/heart.ico', // 设置窗口图标的路径
     webPreferences: {
       preload: join(__dirname, 'preload.js'),
       nodeIntegration: false,
       contextIsolation: true,
+    },
+  });
+
+  mainWindow.maximize();     //打开窗口默认最大化
+  mainWindow.setMenu(null); // 这将移除菜单栏
+
+  mainWindow.webContents.on('before-input-event', (event, input) => {
+    if (input.type === 'keyDown' && input.key === 'F12') {
+      mainWindow.webContents.openDevTools();
     }
   });
 
