@@ -11,12 +11,10 @@ const size = 'small'
   <el-config-provider :size="size" :z-index="zIndex">
   <div class="common-layout">
     <el-container>
-      <el-aside>
+      <el-aside width="200px">
       <SideBar/>
       </el-aside>
-      <el-container>
-        <router-view></router-view>
-      </el-container>
+        <el-main><router-view/></el-main>
     </el-container>
   </div>
   </el-config-provider>
@@ -24,5 +22,8 @@ const size = 'small'
 </template>
 
 <style scoped>
+.el-main {
+  --el-main-padding: 0px;
+}
 
 </style>
