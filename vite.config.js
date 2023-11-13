@@ -21,6 +21,7 @@ const config = defineConfig({
         emptyOutDir: true,
     },
     plugins: [
+        vue(),
         // 使用 Object.assign 或者 spread operator 来合并 plugins 选项
         Object.assign(vue(), {
           template: {

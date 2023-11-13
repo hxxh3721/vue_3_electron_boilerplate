@@ -3,8 +3,10 @@
       <el-col>
         <el-menu class="el-menu-vertical-demo">
           <el-menu-item index="1">
+            <router-link to="/customer" style="text-decoration: none; color: inherit;">
             <el-icon><avatar /></el-icon>
             <span>商家管理</span>
+          </router-link>
           </el-menu-item>
           <el-menu-item index="2">
             <el-icon><list /></el-icon>
@@ -17,6 +19,12 @@
           <el-menu-item index="4">
             <el-icon><Printer /></el-icon>
             <span>核销订单</span>
+          </el-menu-item>
+          <el-menu-item index="5">
+            <router-link to="/datareadme" style="text-decoration: none; color: inherit;">
+            <el-icon><Printer /></el-icon>
+            <span>数据说明</span>
+          </router-link>
           </el-menu-item>
         </el-menu>
       </el-col>
@@ -62,6 +70,10 @@
 
 .el-menu-item:nth-child(4) {
   background: linear-gradient(180deg, #5C8077, #5C7D6C);
+}
+
+.el-menu-item:nth-child(5) {
+  background: linear-gradient(180deg, #5C7D6C, #578764);
 }
 
 .el-menu-item.is-active {

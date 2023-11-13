@@ -1,5 +1,7 @@
 import {app, BrowserWindow, ipcMain, session} from 'electron';
 import {join} from 'path';
+const fs = require('fs');
+const path = require('path');
 
 function createWindow () {
   const mainWindow = new BrowserWindow({
@@ -57,3 +59,29 @@ app.on('window-all-closed', function () {
 ipcMain.on('message', (event, message) => {
   console.log(message);
 })
+
+// 数据说明模块读取文档
+ipcMain.on('read-file', (event) => {
+  const filePath = path.join(__dirname, '../data/DataReadMe.md');
+  fs.readFile(filePath, 'utf8', (err, data) => {
+    if (err) {
+      // 处理错误，如文件不存在等
+      console.error('读取文件出错', err);
+      return;
+    }
+    event.reply('file-content', data);
+  });
+});
+
+// 数据说明模块提交文档
+ipcMain.on('write-file', (event, updatedContent) => {
+  const filePath = path.join(__dirname, '../data/DataReadMe.md');
+  fs.writeFile(filePath, updatedContent, 'utf8', (err) => {
+    if (err) {
+      // 处理错误
+      console.error('写入文件出错', err);
+      return;
+    }
+    // 可选：发送成功的确认信息
+  });
+});
