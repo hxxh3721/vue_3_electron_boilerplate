@@ -1,23 +1,23 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
-import { ipcRenderer } from 'electron';
 
 const content = ref<string>('');
 const isReadOnly = ref<boolean>(true);
 
 onMounted(() => {
-  ipcRenderer.send('read-file');
-  ipcRenderer.on('file-content', (event: any, data: string) => {
+  window.electron.send('read-file');
+  window.electron.on('file-content', (data) => {
     content.value = data;
   });
 });
+
 
 const toggleEdit = () => {
   isReadOnly.value = !isReadOnly.value;
 };
 
 const submitChanges = () => {
-  ipcRenderer.send('write-file', content.value);
+  window.electron.send('write-file', content.value);
   isReadOnly.value = true;
 };
 </script>

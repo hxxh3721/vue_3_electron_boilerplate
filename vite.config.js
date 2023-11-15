@@ -2,6 +2,7 @@ import AutoImport from 'unplugin-auto-import/vite'
 import Components from 'unplugin-vue-components/vite'
 import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
 import vue from '@vitejs/plugin-vue'
+import vuePlugin from '@vitejs/plugin-vue';
 
 const Path = require('path');
 const { defineConfig } = require('vite');
@@ -21,21 +22,7 @@ const config = defineConfig({
         emptyOutDir: true,
     },
     plugins: [
-        vue(),
-        // 使用 Object.assign 或者 spread operator 来合并 plugins 选项
-        Object.assign(vue(), {
-          template: {
-            compilerOptions: {
-              // 这里是 experimentalTemplateCompilerOptions 的配置
-              // 开启 script setup 语法
-              enableScriptSetup: true,
-              // 开启 <style vars> 语法
-              enableStyleVars: true,
-              // 开启 <style scoped> 语法
-              enableStyleScoped: true
-            }
-          }
-        }),
+        vuePlugin(),
         AutoImport({
           resolvers: [ElementPlusResolver()],
         }),

@@ -5,7 +5,7 @@ const path = require('path');
 
 function createWindow () {
   const mainWindow = new BrowserWindow({
-    icon: __dirname + './static/heart.ico', // 设置窗口图标的路径
+    icon: path.join(__dirname, 'static', 'heart.ico'), // 设置窗口图标的路径
     webPreferences: {
       preload: join(__dirname, 'preload.js'),
       nodeIntegration: false,
@@ -60,28 +60,51 @@ ipcMain.on('message', (event, message) => {
   console.log(message);
 })
 
+
+// 数据说明模块读取文档,且根据开发模式不同选择不同的文件
 // 数据说明模块读取文档
 ipcMain.on('read-file', (event) => {
-  const filePath = path.join(__dirname, '../data/DataReadMe.md');
+  let filePath;
+  if (process.env.NODE_ENV === 'development') {
+    filePath = path.join(__dirname, 'static', 'data', 'DataReadMe.md');
+  } else {
+    filePath = path.join(app.getAppPath(), 'static', 'data', 'DataReadMe.md');
+  }
+
   fs.readFile(filePath, 'utf8', (err, data) => {
     if (err) {
-      // 处理错误，如文件不存在等
       console.error('读取文件出错', err);
+      event.reply('file-error', err.message);
       return;
     }
     event.reply('file-content', data);
   });
 });
 
-// 数据说明模块提交文档
+
+// 数据说明模块提交文档,且根据开发模式不同选择不同的文件
+// 分两次修改bulid下的文件和原始src路径下的文件，这样在调试的时候更好查看
 ipcMain.on('write-file', (event, updatedContent) => {
-  const filePath = path.join(__dirname, '../data/DataReadMe.md');
-  fs.writeFile(filePath, updatedContent, 'utf8', (err) => {
+  const srcFilePath = path.join(__dirname, '..', '..', 'src', 'main', 'static', 'data', 'DataReadMe.md');
+  const buildFilePath = path.join(__dirname, 'static', 'data', 'DataReadMe.md');
+
+  // 写入 src 目录
+  fs.writeFile(srcFilePath, updatedContent, 'utf8', (err) => {
     if (err) {
-      // 处理错误
       console.error('写入文件出错', err);
+      event.reply('file-error', err.message);
       return;
     }
-    // 可选：发送成功的确认信息
+  });
+
+  // 写入 build 目录
+  fs.writeFile(buildFilePath, updatedContent, 'utf8', (err) => {
+    if (err) {
+      console.error('写入文件出错', err);
+      event.reply('file-error', err.message);
+      return;
+    }
+    event.reply('file-write-success');
   });
 });
+

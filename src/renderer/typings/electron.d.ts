@@ -8,5 +8,11 @@ export default interface ElectronApi {
 declare global {
   interface Window {
     electronAPI: ElectronApi,
+    electron: {
+      send: (channel: string, data?: any) => void;
+      on: (channel: string, func: (...args: any[]) => void) => void;
+    }
   }
 }
+
+

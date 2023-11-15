@@ -3,7 +3,7 @@ import { ElConfigProvider } from 'element-plus'
 import SideBar from './components/SideBar.vue';
 
 const zIndex = 3000
-const size = 'small'
+const size = 'small' as 'small'
 </script>
 
 <template>
