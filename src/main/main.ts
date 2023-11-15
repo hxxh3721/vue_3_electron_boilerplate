@@ -86,9 +86,21 @@ app.on('window-all-closed', function () {
 // dest - 目标文件路径
 function ensureFileCopied(src, dest) {
   // 检查文件是否已存在于目标路径
-  if (!fs.existsSync(dest)) {
+  if (fs.existsSync(src) && !fs.existsSync(dest)) {
     // 如果不存在，复制文件到目标路径
     fs.copyFileSync(src, dest);
+
+    // 读取目标文件的内容
+    const fileContent = fs.readFileSync(dest, 'utf8');
+
+    // 创建要添加的文本行，包括目标文件的路径
+    const lineToAdd = `本文档位于: ${dest}\n`;
+
+    // 将新行和原始内容组合
+    const updatedContent = lineToAdd + fileContent;
+
+    // 写回更新后的内容到目标文件
+    fs.writeFileSync(dest, updatedContent, 'utf8');
   }
 }
 
@@ -103,7 +115,7 @@ ipcMain.on('read-file', (event) => {
     // 在生产模式下，使用userData路径
     const userDataPath = app.getPath('userData');
     const destFilePath = path.join(userDataPath, 'DataReadMe.md');
-    const srcFilePath = path.join(app.getAppPath(), 'static', 'data', 'DataReadMe.md');
+    const srcFilePath = path.join(process.resourcesPath, 'static', 'data', 'DataReadMe.md');
     // 确保文件已从asar包中复制到userData目录
     ensureFileCopied(srcFilePath, destFilePath);
     // 设置文件路径为userData目录中的路径
