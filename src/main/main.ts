@@ -3,9 +3,14 @@ import {join} from 'path';
 const fs = require('fs');
 const path = require('path');
 
+const iconPath = process.env.NODE_ENV === 'development'
+  ? path.join(__dirname, 'static', 'buttons.ico')
+  : path.join(app.getAppPath(), 'static', 'buttons.ico');
+
+
 function createWindow () {
   const mainWindow = new BrowserWindow({
-    icon: path.join(__dirname, 'static', 'heart.ico'), // 设置窗口图标的路径
+    icon: iconPath,// 设置窗口图标
     webPreferences: {
       preload: join(__dirname, 'preload.js'),
       nodeIntegration: false,
