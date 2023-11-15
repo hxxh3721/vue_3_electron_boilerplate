@@ -3,10 +3,12 @@ import {join} from 'path';
 const fs = require('fs');
 const path = require('path');
 
+
+
+//设置窗口图标
 const iconPath = process.env.NODE_ENV === 'development'
   ? path.join(__dirname, 'static', 'buttons.ico')
   : path.join(app.getAppPath(), 'static', 'buttons.ico');
-
 
 function createWindow () {
   const mainWindow = new BrowserWindow({
@@ -18,9 +20,17 @@ function createWindow () {
     },
   });
 
-  mainWindow.maximize();     //打开窗口默认最大化
-  mainWindow.setMenu(null); // 这将移除菜单栏
 
+//打开窗口默认最大化
+  mainWindow.maximize();
+
+
+// 这将移除菜单栏
+  mainWindow.setMenu(null); 
+
+
+
+// 设置调试按钮
   mainWindow.webContents.on('before-input-event', (event, input) => {
     if (input.type === 'keyDown' && input.key === 'F12') {
       mainWindow.webContents.openDevTools();
@@ -36,6 +46,9 @@ function createWindow () {
   }
 }
 
+
+
+//创建窗口
 app.whenReady().then(() => {
   createWindow();
 
@@ -57,59 +70,80 @@ app.whenReady().then(() => {
   });
 });
 
+
+
+//监听关闭窗口
 app.on('window-all-closed', function () {
   if (process.platform !== 'darwin') app.quit()
 });
 
-ipcMain.on('message', (event, message) => {
-  console.log(message);
-})
 
 
-// 数据说明模块读取文档,且根据开发模式不同选择不同的文件
-// 数据说明模块读取文档
+
+
+// 辅助函数：确保文件从asar包复制到userData目录
+// src - 源文件路径
+// dest - 目标文件路径
+function ensureFileCopied(src, dest) {
+  // 检查文件是否已存在于目标路径
+  if (!fs.existsSync(dest)) {
+    // 如果不存在，复制文件到目标路径
+    fs.copyFileSync(src, dest);
+  }
+}
+
+// 处理读取文件的请求
 ipcMain.on('read-file', (event) => {
   let filePath;
+  // 检查当前是否处于开发模式
   if (process.env.NODE_ENV === 'development') {
+    // 在开发模式下，直接从项目文件夹中的路径读取文件
     filePath = path.join(__dirname, 'static', 'data', 'DataReadMe.md');
   } else {
-    filePath = path.join(app.getAppPath(), 'static', 'data', 'DataReadMe.md');
+    // 在生产模式下，使用userData路径
+    const userDataPath = app.getPath('userData');
+    const destFilePath = path.join(userDataPath, 'DataReadMe.md');
+    const srcFilePath = path.join(app.getAppPath(), 'static', 'data', 'DataReadMe.md');
+    // 确保文件已从asar包中复制到userData目录
+    ensureFileCopied(srcFilePath, destFilePath);
+    // 设置文件路径为userData目录中的路径
+    filePath = destFilePath;
   }
 
+  // 读取文件内容
   fs.readFile(filePath, 'utf8', (err, data) => {
     if (err) {
+      // 如果出现错误，向前端发送错误信息
       console.error('读取文件出错', err);
       event.reply('file-error', err.message);
       return;
     }
+    // 成功读取后，发送文件内容
     event.reply('file-content', data);
   });
 });
 
-
-// 数据说明模块提交文档,且根据开发模式不同选择不同的文件
-// 分两次修改bulid下的文件和原始src路径下的文件，这样在调试的时候更好查看
+// 处理写入文件的请求
 ipcMain.on('write-file', (event, updatedContent) => {
-  const srcFilePath = path.join(__dirname, '..', '..', 'src', 'main', 'static', 'data', 'DataReadMe.md');
-  const buildFilePath = path.join(__dirname, 'static', 'data', 'DataReadMe.md');
+  let filePath;
+  // 检查当前是否处于开发模式
+  if (process.env.NODE_ENV === 'development') {
+    // 在开发模式下，直接使用项目文件夹中的路径
+    filePath = path.join(__dirname, 'static', 'data', 'DataReadMe.md');
+  } else {
+    // 在生产模式下，使用userData路径
+    filePath = path.join(app.getPath('userData'), 'DataReadMe.md');
+  }
 
-  // 写入 src 目录
-  fs.writeFile(srcFilePath, updatedContent, 'utf8', (err) => {
+  // 将更新后的内容写入文件
+  fs.writeFile(filePath, updatedContent, 'utf8', (err) => {
     if (err) {
+      // 如果写入过程出错，向前端发送错误信息
       console.error('写入文件出错', err);
       event.reply('file-error', err.message);
       return;
     }
-  });
-
-  // 写入 build 目录
-  fs.writeFile(buildFilePath, updatedContent, 'utf8', (err) => {
-    if (err) {
-      console.error('写入文件出错', err);
-      event.reply('file-error', err.message);
-      return;
-    }
+    // 写入成功后，通知前端
     event.reply('file-write-success');
   });
 });
-
