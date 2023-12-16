@@ -1,6 +1,6 @@
 import { app, BrowserWindow, ipcMain } from 'electron';
 import path from 'path';
-import fs from 'fs';
+import { initDataReadMeModule } from './electron-utils/DataReadMe';
 
 // 设置窗口图标路径
 const iconPath = process.env.NODE_ENV === 'development'
@@ -33,29 +33,11 @@ function createWindow() {
 }
 
 
-// 复制文件并在文件开头添加路径信息
-function copyFileWithHeader(src, dest) {
-  fs.copyFileSync(src, dest);
-  const header = `本文件位于：${dest}\n`;
-  const content = fs.readFileSync(dest, 'utf8');
-  fs.writeFileSync(dest, header + content, 'utf8');
-}
-
 
 // 当Electron应用准备就绪后执行
 app.whenReady().then(() => {
   createWindow(); // 创建窗口
-
-  if (process.env.NODE_ENV !== 'development') {
-    const userDataPath = app.getPath('userData');
-    const destFilePath = path.join(userDataPath, 'DataReadMe.md');
-    const srcFilePath = path.join(app.getAppPath(), 'static', 'data', 'DataReadMe.md');
-
-    // 生产模式下，如果文件不存在，则复制并添加路径头
-    if (!fs.existsSync(destFilePath)) {
-      copyFileWithHeader(srcFilePath, destFilePath);
-    }
-  }
+  initDataReadMeModule(); // 初始化 DataReadMe 模块
 });
 
 
@@ -65,25 +47,3 @@ app.on('window-all-closed', function () {
   if (process.platform !== 'darwin') app.quit();
 });
 
-// 处理读取文件的请求
-ipcMain.on('read-file', (event) => {
-  const userDataPath = app.getPath('userData');
-  const filePath = process.env.NODE_ENV === 'development'
-    ? path.join(__dirname, 'static', 'data', 'DataReadMe.md')
-    : path.join(userDataPath, 'DataReadMe.md');
-
-  // 读取文件并发送内容到渲染器进程
-  const data = fs.readFileSync(filePath, 'utf8');
-  event.reply('file-content', data);
-});
-
-// 处理写入文件的请求
-ipcMain.on('write-file', (event, updatedContent) => {
-  const userDataPath = app.getPath('userData');
-  const filePath = process.env.NODE_ENV === 'development'
-    ? path.join(__dirname, 'static', 'data', 'DataReadMe.md')
-    : path.join(userDataPath, 'DataReadMe.md');
-
-  // 将更新后的内容写入文件
-  fs.writeFileSync(filePath, updatedContent, 'utf8');
-})

@@ -1,56 +1,43 @@
 {
     "appId": "com.electron.app",
     "directories": {
-        "output": "dist",
-        "usage above 1": "应用的唯一标识符"
+      "output": "dist"
     },
     "nsis": {
-        "oneClick": false,
-        "usage above 2": "安装时不是一键安装",
-        "perMachine": false,
-        "usage above 3": "安装不是针对所有用户",
-        "allowToChangeInstallationDirectory": true, 
-        "shortcutName": "Electron App",
-        "usage above 4": "这是快捷方式的名称注释"
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true, 
+      "shortcutName": "Electron App"
     },
     "win": {
-        "target": "nsis",
-        "usage above 5": "Windows 平台的打包目标格式",
-        "icon": "src/main/static/buttons.ico",
-        "usage above 6": "应用图标"
+      "target": "nsis",
+      "icon": "src/main/static/buttons.ico"
     },
     "linux": {
-        "target": ["snap"],
-        "usage above 7": "Linux 平台的打包目标格式"
+      "target": ["snap"]
     },
     "files": [
-        "build/main/**/*",
-        "usage above 8", "包含 build/main 下的所有文件",
-        {
-            "from": "build/renderer",
-            "usage above 9": "从 build/renderer 复制文件",
-            "to": "renderer",
-            "usage above 10": "到 renderer 目录",
-            "filter": ["**/*"]
-        },
-        {
-            "from": "src/main/static",
-            "usage above 11": "从 src/main/static 复制文件",
-            "to": "static",
-            "usage above 12": "到 static 目录",
-            "filter": ["**/*"]
-        },
-        "!**/node_modules/*/{CHANGELOG.md,README.md,README,readme.md,readme}",
-        "!**/node_modules/*/{test,__tests__,tests,powered-test,example,examples}",
-        "!**/node_modules/*.d.ts",
-        "!**/node_modules/.bin",
-        "!src",
-        "!config",
-        "!README.md",
-        "!scripts",
-        "!build/renderer",
-        "!dist",
-        "usage above 13", "排除的文件和目录"
-    ],
-    "usage above 14": "这是JSON对象的末尾注释"
-}
+      "build/main/**/*",
+      {
+        "from": "build/renderer",
+        "to": "renderer",
+        "filter": ["**/*"]
+      },
+      {
+        "from": "src/main/static",
+        "to": "static",
+        "filter": ["**/*"]
+      },
+      "!**/node_modules/*/{CHANGELOG.md,README.md,README,readme.md,readme}",
+      "!**/node_modules/*/{test,__tests__,tests,powered-test,example,examples}",
+      "!**/node_modules/*.d.ts",
+      "!**/node_modules/.bin",
+      "!src",
+      "!config",
+      "!README.md",
+      "!scripts",
+      "!build/renderer",
+      "!dist"
+    ]
+  }
+  

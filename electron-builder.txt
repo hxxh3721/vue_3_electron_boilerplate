@@ -1,0 +1,34 @@
+appId: 应用的唯一标识符，通常反映了应用的包名。
+
+directories:
+  output: 打包后的输出目录。
+
+nsis:
+  oneClick: 安装时不是一键安装，即用户在安装过程中有更多选项。
+  perMachine: 安装不是针对所有用户，即安装是针对当前用户。
+  allowToChangeInstallationDirectory: 允许用户更改安装目录。
+  shortcutName: 创建的快捷方式的名称。
+
+win:
+  target: Windows 平台的打包目标格式，这里使用 NSIS 系统。
+  icon: 应用的图标文件路径。
+
+linux:
+  target: Linux 平台的打包目标格式，这里使用 Snap 包格式。
+
+files:
+  这是一个数组，指定了要包含在最终应用程序包中的文件和文件夹。
+  其中可以使用 glob 模式，以及排除特定文件的模式。
+
+！！！！！！注意！！！！！
+以下这些配置项，让elctron-builder把build文件夹内的文件统统打包到了
+最终项目的resource目录下的app.asar文件内。
+
+
+  第一个元素 "build/main/**/*" 表示包含 build/main 目录下的所有文件。    
+
+  第二个对象从 "build/renderer" 复制文件到 "renderer" 目录。
+
+  第三个对象从 "src/main/static" 复制文件到 "static" 目录。
+
+  排除模式（以 "!" 开头的项）用于从打包过程中排除不需要的文件和目录。
