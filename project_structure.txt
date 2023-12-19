@@ -1,0 +1,1402 @@
+.git/
+--HEAD
+--config
+--description
+--hooks/
+----applypatch-msg.sample
+----commit-msg.sample
+----fsmonitor-watchman.sample
+----post-update.sample
+----pre-applypatch.sample
+----pre-commit.sample
+----pre-merge-commit.sample
+----pre-push.sample
+----pre-rebase.sample
+----pre-receive.sample
+----prepare-commit-msg.sample
+----push-to-checkout.sample
+----sendemail-validate.sample
+----update.sample
+--index
+--info/
+----exclude
+--logs/
+----HEAD
+----refs/
+------heads/
+--------master
+------remotes/
+--------origin/
+----------HEAD
+--objects/
+----info/
+----pack/
+------pack-ea55dcccc444412d34712a877422ff34923bd084.idx
+------pack-ea55dcccc444412d34712a877422ff34923bd084.pack
+------pack-ea55dcccc444412d34712a877422ff34923bd084.rev
+--packed-refs
+--refs/
+----heads/
+------master
+----remotes/
+------origin/
+--------HEAD
+----tags/
+.gitignore
+LICENSE
+README.md
+electron-builder.json
+electron-builder.txt
+package-lock.json
+package.json
+project_content_generator.py
+project_structure_generator.py
+scripts/
+--build.js
+--dev-server.js
+--private/
+----tsc.js
+src/
+--main/
+----electron-utils/
+------DataReadMe.ts
+----main.ts
+----preload.ts
+----static/
+------.gitkeep
+------buttons.ico
+------data/
+--------DataReadMe.md
+--------database.db
+------heart.ico
+----tsconfig.json
+--renderer/
+----App.vue
+----auto-imports.d.ts
+----components/
+------HelloWorld.vue
+------SideBar.vue
+----components.d.ts
+----index.html
+----main.ts
+----public/
+------vite.svg
+------vue.svg
+----router/
+------index.ts
+----store/
+------index.ts
+----style.css
+----tsconfig.json
+----typings/
+------electron.d.ts
+------shims-vue.d.ts
+----views/
+------About.vue
+------Customer.vue
+------DataReadMe.vue
+------Home.vue
+vite.config.js
+
+----electron-builder.json----
+{
+    "appId": "com.electron.app",
+    "directories": {
+      "output": "dist"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true, 
+      "shortcutName": "Electron App"
+    },
+    "win": {
+      "target": "nsis",
+      "icon": "src/main/static/buttons.ico"
+    },
+    "linux": {
+      "target": ["snap"]
+    },
+    "files": [
+      "build/main/**/*",
+      {
+        "from": "build/renderer",
+        "to": "renderer",
+        "filter": ["**/*"]
+      },
+      {
+        "from": "src/main/static",
+        "to": "static",
+        "filter": ["**/*"]
+      },
+      "!**/node_modules/*/{CHANGELOG.md,README.md,README,readme.md,readme}",
+      "!**/node_modules/*/{test,__tests__,tests,powered-test,example,examples}",
+      "!**/node_modules/*.d.ts",
+      "!**/node_modules/.bin",
+      "!src",
+      "!config",
+      "!README.md",
+      "!scripts",
+      "!build/renderer",
+      "!dist"
+    ]
+  }
+  
+----electron-builder.txt----
+appId: 应用的唯一标识符，通常反映了应用的包名。
+
+directories:
+  output: 打包后的输出目录。
+
+nsis:
+  oneClick: 安装时不是一键安装，即用户在安装过程中有更多选项。
+  perMachine: 安装不是针对所有用户，即安装是针对当前用户。
+  allowToChangeInstallationDirectory: 允许用户更改安装目录。
+  shortcutName: 创建的快捷方式的名称。
+
+win:
+  target: Windows 平台的打包目标格式，这里使用 NSIS 系统。
+  icon: 应用的图标文件路径。
+
+linux:
+  target: Linux 平台的打包目标格式，这里使用 Snap 包格式。
+
+files:
+  这是一个数组，指定了要包含在最终应用程序包中的文件和文件夹。
+  其中可以使用 glob 模式，以及排除特定文件的模式。
+
+！！！！！！注意！！！！！
+以下这些配置项，让elctron-builder把build文件夹内的文件统统打包到了
+最终项目的resource目录下的app.asar文件内。
+
+
+  第一个元素 "build/main/**/*" 表示包含 build/main 目录下的所有文件。    
+
+  第二个对象从 "build/renderer" 复制文件到 "renderer" 目录。
+
+  第三个对象从 "src/main/static" 复制文件到 "static" 目录。
+
+  排除模式（以 "!" 开头的项）用于从打包过程中排除不需要的文件和目录。
+
+----LICENSE----
+MIT License
+
+Copyright (c) 2021 Deluze
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+----package.json----
+{
+  "name": "vue_3_electron_boilerplate",
+  "version": "0.1.0",
+  "description": "A minimal Electron + Vue application",
+  "main": "build/main/main.js",
+  "scripts": {
+    "dev": "node scripts/dev-server.js",
+    "build": "node scripts/build.js && electron-builder",
+    "build:win": "node scripts/build.js && electron-builder --win",
+    "build:mac": "node scripts/build.js && electron-builder --mac",
+    "build:linux": "node scripts/build.js && electron-builder --linux"
+  },
+  "repository": "https://github.com/deluze/electron-vue-template",
+  "author": {
+    "name": "Deluze",
+    "url": "https://github.com/Deluze"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.4",
+    "@vitejs/plugin-vue": "^4.0.0",
+    "@vue/runtime-dom": "^3.3.8",
+    "chalk": "^4.1.2",
+    "chokidar": "^3.5.3",
+    "electron": "^25.2.0",
+    "electron-builder": "^24.2.1",
+    "typescript": "^4.8.4",
+    "unplugin-auto-import": "^0.16.7",
+    "unplugin-vue-components": "^0.25.2",
+    "vite": "^4.1.1"
+  },
+  "dependencies": {
+    "@vueuse/core": "^10.6.0",
+    "element-plus": "^2.4.2",
+    "pinia": "^2.1.7",
+    "sqlite3": "^5.1.6",
+    "vue": "^3.3.8",
+    "vue-router": "^4.2.5"
+  }
+}
+
+----project_content_generator.py----
+"""
+.git 和 node_modules 文件夹。
+build和dist文件夹。
+package-lock.json, .gitignore, 
+builder-debug.yml, 
+builder-effective-config.yaml, 
+latest.yml 文件。
+名称中包含 "licenses" 的文件（不区分大小写）。
+
+"""
+
+import os
+
+def read_and_combine_files(directory):
+    output_filename = os.path.join(directory, "combined_output.txt")
+    with open(output_filename, "w", encoding="utf-8") as output_file:
+        for root, dirs, files in os.walk(directory):
+            # 排除指定的目录
+            dirs[:] = [d for d in dirs if d not in ['.git', 'node_modules', 'build', 'dist']]
+            for filename in files:
+                # 排除指定的文件和文件名
+                if filename in ["package-lock.json", ".gitignore", "builder-debug.yml", 
+                                "builder-effective-config.yaml", "latest.yml"]:
+                    continue
+                if "licenses" in filename.lower():
+                    continue
+                file_path = os.path.join(root, filename)
+                output_file.write(f"----{filename}----\n")
+                try:
+                    with open(file_path, "r", encoding="utf-8") as file:
+                        content = file.read()
+                        output_file.write(content)
+                except UnicodeDecodeError:
+                    output_file.write(f"{filename} is a non-text file")
+                except Exception as e:
+                    output_file.write(f"Error reading file: {e}")
+                output_file.write("\n\n")
+
+current_directory = os.path.dirname(os.path.realpath(__file__))
+read_and_combine_files(current_directory)
+
+----project_structure_generator.py----
+import os
+
+def generate_project_structure(dir_path, prefix=''):
+    """
+    Generate the project structure for the given directory path, excluding 'node_modules', 'build', and 'dist' directories.
+
+    :param dir_path: Directory path to generate the project structure for.
+    :param prefix: Prefix used for indenting the structure to represent hierarchy.
+    """
+    structure = []
+
+    for item in sorted(os.listdir(dir_path)):
+        path = os.path.join(dir_path, item)
+        if os.path.isdir(path):
+            if item in ['node_modules', 'build', 'dist']:
+                continue  # Skip specified directories
+            structure.append(prefix + item + '/')
+            structure.extend(generate_project_structure(path, prefix + '--'))
+        else:
+            structure.append(prefix + item)
+
+    return structure
+
+def read_and_combine_files(directory):
+    combined_content = []
+    for root, dirs, files in os.walk(directory):
+        dirs[:] = [d for d in dirs if d not in ['.git', 'node_modules', 'build', 'dist']]
+        for filename in files:
+            if filename in ["package-lock.json", ".gitignore", "builder-debug.yml", 
+                            "builder-effective-config.yaml", "latest.yml"]:
+                continue
+            if "licenses" in filename.lower():
+                continue
+            file_path = os.path.join(root, filename)
+            combined_content.append(f"----{filename}----")
+            try:
+                with open(file_path, "r", encoding="utf-8") as file:
+                    content = file.read()
+                    combined_content.append(content)
+            except UnicodeDecodeError:
+                combined_content.append(f"{filename} is a non-text file")
+            except Exception as e:
+                combined_content.append(f"Error reading file: {e}")
+
+    return combined_content
+
+def save_to_file(project_structure, combined_content, file_name):
+    """
+    Save the generated structure and combined file content to a file.
+
+    :param project_structure: List of strings representing the project structure.
+    :param combined_content: List of strings representing the combined file content.
+    :param file_name: Name of the file to save the content.
+    """
+    with open(file_name, 'w', encoding='utf-8') as file:
+        file.write('\n'.join(project_structure) + '\n\n')
+        file.write('\n'.join(combined_content))
+
+# The directory of the script
+script_directory = os.path.dirname(os.path.abspath(__file__))
+
+# Generate the project structure
+project_structure = generate_project_structure(script_directory)
+
+# Read and combine file contents
+combined_content = read_and_combine_files(script_directory)
+
+# Save both the structure and combined content to a file
+save_to_file(project_structure, combined_content, os.path.join(script_directory, 'project_structure.txt'))
+
+print("Project structure and file contents saved to 'project_structure.txt'")
+
+----README.md----
+<div align="center"> 
+
+# Electron Vue Template
+  
+<img width="794" alt="image" src="https://user-images.githubusercontent.com/32544586/222748627-ee10c9a6-70d2-4e21-b23f-001dd8ec7238.png">
+
+A simple starter template for a **Vue3** + **Electron** TypeScript based application, including **ViteJS** and **Electron Builder**.
+</div>
+
+## About
+
+This template utilizes [ViteJS](https://vitejs.dev) for building and serving your (Vue powered) front-end process, it provides Hot Reloads (HMR) to make development fast and easy ⚡ 
+
+Building the Electron (main) process is done with [Electron Builder](https://www.electron.build/), which makes your application easily distributable and supports cross-platform compilation 😎
+
+## Getting started
+
+Click the green **Use this template** button on top of the repository, and clone your own newly created repository.
+
+**Or..**
+
+Clone this repository: `git clone git@github.com:Deluze/electron-vue-template.git`
+
+
+### Install dependencies ⏬
+
+```bash
+npm install
+```
+
+### Start developing ⚒️
+
+```bash
+npm run dev
+```
+
+## Additional Commands
+
+```bash
+npm run dev # starts application with hot reload
+npm run build # builds application, distributable files can be found in "dist" folder
+
+# OR
+
+npm run build:win # uses windows as build target
+npm run build:mac # uses mac as build target
+npm run build:linux # uses linux as build target
+```
+
+Optional configuration options can be found in the [Electron Builder CLI docs](https://www.electron.build/cli.html).
+## Project Structure
+
+```bash
+- scripts/ # all the scripts used to build or serve your application, change as you like.
+- src/
+  - main/ # Main thread (Electron application source)
+  - renderer/ # Renderer thread (VueJS application source)
+```
+
+## Using static files
+
+If you have any files that you want to copy over to the app directory after installation, you will need to add those files in your `src/main/static` directory.
+
+#### Referencing static files from your main process
+
+```ts
+/* Assumes src/main/static/myFile.txt exists */
+
+import {app} from 'electron';
+import {join} from 'path';
+import {readFileSync} from 'fs';
+
+const path = join(app.getAppPath(), 'static', 'myFile.txt');
+const buffer = readFileSync(path);
+```
+
+----vite.config.js----
+// 导入各种 Vite 插件和工具
+import AutoImport from 'unplugin-auto-import/vite'
+import Components from 'unplugin-vue-components/vite'
+import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
+import vue from '@vitejs/plugin-vue'
+import vuePlugin from '@vitejs/plugin-vue';
+
+const Path = require('path');
+const { defineConfig } = require('vite');
+
+// Vite 配置文档：https://vitejs.dev/config
+const config = defineConfig({
+    // 设置项目的根目录
+    root: Path.join(__dirname, 'src', 'renderer'),
+    // 指定静态资源目录
+    publicDir: 'public',
+    // 配置开发服务器
+    server: {
+        port: 8080, // 指定服务器端口
+    },
+    open: false, // 是否在服务器启动时自动打开浏览器
+    // 构建配置
+    build: {
+        outDir: Path.join(__dirname, 'build', 'renderer'), // 指定输出目录
+        emptyOutDir: true, // 构建前清空输出目录
+    },
+    // 插件列表
+    plugins: [
+        vuePlugin(), // Vue 插件
+        AutoImport({ // 自动导入插件
+          resolvers: [ElementPlusResolver()],
+        }),
+        Components({ // Vue 组件插件
+          resolvers: [ElementPlusResolver()],
+        }),
+    ],
+});
+
+module.exports = config;
+
+----build.js----
+//build.js 负责构建整个 Electron 应用程序，包括渲染器和主进程。它使用 Vite 来构建渲染器进程，并使用自定义的 TypeScript 编译脚本来编译主进程。
+//它和tsc.js共同确保了您的应用程序可以从源代码正确地编译和构建，为后续的打包和发布做好准备。
+
+
+// 导入 Node.js 的 path 模块，用于处理文件路径
+const Path = require('path');
+
+// 导入 chalk 模块，用于在控制台输出彩色文本
+const Chalk = require('chalk');
+
+// 导入 Node.js 的 fs 模块，用于文件系统操作
+const FileSystem = require('fs');
+
+// 导入 Vite 模块，一个现代前端构建工具
+const Vite = require('vite');
+
+// 导入自定义的 TypeScript 编译模块
+const compileTs = require('./private/tsc');
+
+// 定义一个函数来构建渲染器进程，使用 Vite 并指定配置文件和运行模式
+function buildRenderer() {
+    return Vite.build({
+        configFile: Path.join(__dirname, '..', 'vite.config.js'),
+        base: './',
+        mode: 'production'
+    });
+}
+
+// 定义一个函数来构建主进程，编译位于特定路径的 TypeScript 代码
+function buildMain() {
+    const mainPath = Path.join(__dirname, '..', 'src', 'main');
+    return compileTs(mainPath);
+}
+
+// 删除 build 目录及其内容，以准备新的构建
+FileSystem.rmSync(Path.join(__dirname, '..', 'build'), {
+    recursive: true,
+    force: true,
+})
+
+// 在控制台输出蓝色的提示信息，表示开始转译渲染器和主进程
+console.log(Chalk.blueBright('Transpiling renderer & main...'));
+
+// 并行执行渲染器和主进程的构建任务，完成后输出绿色的成功信息
+Promise.allSettled([
+    buildRenderer(),
+    buildMain(),
+]).then(() => {
+    console.log(Chalk.greenBright('Renderer & main successfully transpiled! (ready to be built with electron-builder)'));
+});
+
+----dev-server.js----
+//这个脚本用于启动和管理您的 Electron 应用程序的开发服务器。它通过 Vite 启动渲染器，并使用 Electron 来启动主进程。脚本还包括监听文件变化并重启 Electron 进程的逻辑，以便在开发过程中实现热重载。
+
+
+// 设置环境变量为开发模式
+process.env.NODE_ENV = 'development';
+
+// 引入所需模块
+const Vite = require('vite');
+const ChildProcess = require('child_process');
+const Path = require('path');
+const Chalk = require('chalk');
+const Chokidar = require('chokidar');
+const Electron = require('electron');
+const compileTs = require('./private/tsc');
+const FileSystem = require('fs');
+const { EOL } = require('os');
+
+// 初始化一些变量
+let viteServer = null;
+let electronProcess = null;
+let electronProcessLocker = false;
+let rendererPort = 0;
+
+// 定义启动渲染器的异步函数
+async function startRenderer() {
+    viteServer = await Vite.createServer({
+        configFile: Path.join(__dirname, '..', 'vite.config.js'),
+        mode: 'development',
+    });
+    return viteServer.listen();
+}
+
+// 定义启动 Electron 的异步函数
+async function startElectron() {
+    // 检查是否已经启动 Electron 进程，避免重复启动
+    if (electronProcess) {
+        return; // 如果已经启动，直接返回
+    }
+    
+    try {
+        // 编译 TypeScript 代码，如果出错则捕获异常
+        await compileTs(Path.join(__dirname, '..', 'src', 'main'));
+    } catch {
+        // 如果编译出错，输出错误信息，然后设置标志
+        console.log(Chalk.redBright('无法启动 Electron，因为存在 TypeScript 错误。'));
+        electronProcessLocker = false;
+        return;
+    }
+    
+    // 构建启动 Electron 进程所需的参数数组
+    const args = [Path.join(__dirname, '..', 'build', 'main', 'main.js'), rendererPort];
+    
+    // 使用 ChildProcess.spawn 方法启动 Electron 主进程，注意方法名字虽然是子进程，但是实际启动的是electron主进程
+    electronProcess = ChildProcess.spawn(Electron, args);
+    
+    // 设置标志，表示 Electron 进程已启动
+    electronProcessLocker = false;
+
+    // 配置 Electron 主进程的输出
+    electronProcess.stdout.on('data', data => {
+        if (data == EOL) {
+            return; // 忽略空数据
+        }
+        // 将 Electron 主进程的标准输出写入标准输出流，并添加标识
+        process.stdout.write(Chalk.blueBright(`[electron] `) + Chalk.white(data.toString()))
+    });
+
+    electronProcess.stderr.on('data', data => {
+        // 将 Electron 主进程的标准错误写入标准错误流，并添加标识
+        process.stderr.write(Chalk.blueBright(`[electron] `) + Chalk.white(data.toString()))
+    });
+
+    // 监听 Electron 主进程的退出事件，然后调用 stop 函数
+    electronProcess.on('exit', () => stop());
+
+}
+
+
+// 重启 Electron 进程的函数
+function restartElectron() {
+    if (electronProcess) {
+        electronProcess.removeAllListeners('exit');
+        electronProcess.kill();
+        electronProcess = null;
+    }
+    if (!electronProcessLocker) {
+        electronProcessLocker = true;
+        startElectron();
+    }
+}
+
+
+
+// 复制文件的辅助函数
+/*
+Electron的工作目录是build/main，而不是src/main，这是因为使用了TypeScript。
+tsc不会复制静态文件，因此需要手动将它们复制到开发服务器中。
+*/
+function copy(path) {
+    FileSystem.cpSync(
+        Path.join(__dirname, '..', 'src', 'main', path),
+        Path.join(__dirname, '..', 'build', 'main', path),
+        { recursive: true }
+    );
+}
+
+
+// 复制静态文件到构建目录
+function copyStaticFiles() {
+    copy('static');
+}
+
+
+
+// 停止服务和退出程序的函数
+function stop() {
+    viteServer.close();
+    process.exit();
+}
+
+// 主函数，用于启动整个开发服务器
+async function start() {
+    // 输出启动信息
+    console.log(`${Chalk.greenBright('=======================================')}`);
+    console.log(`${Chalk.greenBright('Starting Electron + Vite Dev Server...')}`);
+    console.log(`${Chalk.greenBright('=======================================')}`);
+
+    // 启动渲染器开发服务器，获取其配置中的端口号
+    const devServer = await startRenderer();
+    rendererPort = devServer.config.server.port;
+
+    // 复制静态文件到构建目录
+    copyStaticFiles();
+
+    // 启动 Electron 主进程
+    startElectron();
+
+    // 监听文件变动，用于重启 Electron 进程
+    const path = Path.join(__dirname, '..', 'src', 'main');
+
+    // 使用 Chokidar 模块创建文件变动的监听器，监视指定目录中的文件变动
+    Chokidar.watch(path, { cwd: path }).on('change', (changedFilePath) => {
+        // 打印文件变动信息，包括文件路径和提示消息
+        console.log(Chalk.blueBright(`[electron] `) + `文件 ${changedFilePath} 发生变动，正在重载... 🚀`);
+
+        // 检查变动的文件是否位于静态文件目录
+        if (changedFilePath.startsWith(Path.join('static', '/'))) {
+            // 如果是静态文件目录中的文件变动，执行以下操作：
+
+            // 复制变动的文件到构建目录，以确保最新的静态文件被更新到构建目录
+            copy(changedFilePath);
+        }
+
+        // 重启 Electron 进程，以应用最新的代码和资源变动
+        restartElectron();
+    });
+}
+
+// 调用主函数启动开发服务器
+start();
+
+
+
+
+----tsc.js----
+// 引入 Node.js 的 child_process 模块，用于创建子进程
+const ChildProcess = require('child_process');
+
+// 引入 chalk 模块，用于在控制台输出彩色文本
+const Chalk = require('chalk');
+
+// 定义一个编译函数，用于编译 TypeScript 代码
+function compile(directory) {
+  // 返回一个新的 Promise 对象
+  return new Promise((resolve, reject) => {
+    // 创建一个子进程来执行 tsc 命令
+    const tscProcess = ChildProcess.exec('tsc', {
+      cwd: directory, // 设置当前工作目录为传入的 directory
+    });
+
+    // 当子进程有标准输出时，将输出的数据写入到主进程的标准输出
+    tscProcess.stdout.on('data', data => 
+        process.stdout.write(Chalk.yellowBright(`[tsc] `) + Chalk.white(data.toString()))
+    );
+
+    // 当子进程退出时，根据退出代码来决定是解决还是拒绝 Promise
+    tscProcess.on('exit', exitCode => {
+      if (exitCode > 0) {
+        reject(exitCode); // 如果退出代码大于 0，拒绝 Promise
+      } else {
+        resolve(); // 否则解决 Promise
+      }
+    });
+  });
+}
+
+// 导出 compile 函数
+module.exports = compile;
+
+
+/*将 tsc.js 放在一个名为 private 的文件夹中，而不是与 dev-server.js 和 build.js 放在同一个 scripts 文件夹中，可能有几个原因：
+
+模块化和组织结构：作者可能想要保持项目的结构清晰和模块化。将特定功能的脚本放在不同的目录中可以帮助维护代码的清晰度和可管理性。例如，private 文件夹可能用于存放那些不打算被外部直接调用的辅助模块。
+
+重用和封装：tsc.js 可能被设计为一个更通用的 TypeScript 编译工具，可以在多个项目中重用，而不仅仅是在当前项目中。通过将其放在一个单独的文件夹中，作者可以更容易地维护和更新这个脚本，而不会影响到其他脚本。
+
+隐藏实现细节：将 tsc.js 放在 private 文件夹中可能是为了隐藏其实现细节，使得项目的其他部分不需要关心 TypeScript 编译的具体方式。这样一来，dev-server.js 和 build.js 可以作为更高层次的脚本来运行，而不用关心底层的编译细节。
+
+安全或策略考虑：在某些情况下，特定的脚本或代码可能需要被放在单独的目录中以满足安全或项目策略的要求。这可以防止不小心修改或删除重要的辅助脚本。
+
+每个项目的组织结构都有其特定的逻辑和原因，这些原因可能因项目、团队习惯或个人偏好而异。 */
+----main.ts----
+import { app, BrowserWindow, ipcMain } from 'electron';
+import path from 'path';
+import { initDataReadMeModule } from './electron-utils/DataReadMe';
+
+// 设置窗口图标路径
+const iconPath = process.env.NODE_ENV === 'development'
+  ? path.join(__dirname, 'static', 'buttons.ico')
+  : path.join(app.getAppPath(), 'static', 'buttons.ico');
+
+
+// 创建浏览器窗口的函数
+function createWindow() {
+  const mainWindow = new BrowserWindow({
+    icon: iconPath, // 设置窗口图标
+    webPreferences: {
+      preload: path.join(__dirname, 'preload.js'),
+      nodeIntegration: false,
+      contextIsolation: true,
+    },
+  });
+
+  mainWindow.maximize(); // 打开窗口默认最大化
+  mainWindow.setMenu(null); // 移除菜单栏
+
+  // 在开发模式下，加载开发服务器的URL
+  if (process.env.NODE_ENV === 'development') {
+    const rendererPort = process.argv[2];
+    mainWindow.loadURL(`http://localhost:${rendererPort}`);
+  } else {
+    // 在生产模式下，加载编译后的HTML文件
+    mainWindow.loadFile(path.join(app.getAppPath(), 'renderer', 'index.html'));
+  }
+}
+
+
+
+// 当Electron应用准备就绪后执行
+app.whenReady().then(() => {
+  createWindow(); // 创建窗口
+  initDataReadMeModule(); // 初始化 DataReadMe 模块
+});
+
+
+
+// 当所有窗口关闭时退出应用（MacOS除外）
+app.on('window-all-closed', function () {
+  if (process.platform !== 'darwin') app.quit();
+});
+
+
+----preload.ts----
+// 引入 Electron 的 contextBridge 和 ipcRenderer 模块
+import {contextBridge, ipcRenderer} from 'electron';
+
+// 通过 contextBridge 在渲染器的全局作用域中暴露一个 electronAPI 对象
+contextBridge.exposeInMainWorld('electronAPI', {
+  // 提供 sendMessage 方法，允许渲染器进程通过 ipcRenderer 向主进程发送消息
+  sendMessage: (message: string) => ipcRenderer.send('message', message)
+})
+
+// 再次使用 contextBridge 暴露一个 electron 对象
+contextBridge.exposeInMainWorld('electron', {
+  // 提供 send 方法，用于从渲染器进程发送 IPC 消息
+  send: ipcRenderer.send,
+  // 提供 on 方法，用于监听主进程发送的 IPC 消息
+  on: (channel, func) => {
+    ipcRenderer.on(channel, (event, ...args) => func(...args));
+  }
+});
+
+----tsconfig.json----
+/*这个配置文件主要用于控制 TypeScript 编译器的行为，包括编译输出的 JavaScript 代码的版本、模块系统、严格模式等。它还定义了哪些文件或目录应该被编译器忽略。*/
+
+
+
+{
+  "compilerOptions": {
+    "target": "ES2015", // 指定 ECMAScript 目标版本
+    "module": "commonjs", // 使用 commonjs 模块系统
+    "strict": true, // 启用所有严格类型检查选项
+    "esModuleInterop": true, // 允许导入非 ES 模块
+    "skipLibCheck": true, // 跳过库文件的类型检查
+    "forceConsistentCasingInFileNames": true, // 强制文件名大小写一致
+    "outDir": "../../build/main", // 指定输出目录
+    "allowJs": true, // 允许编译 JavaScript 文件
+    "noImplicitAny": false, // 允许隐式 any 类型
+  },
+  "exclude": ["static"] // 排除 static 目录
+}
+
+----DataReadMe.ts----
+import { ipcMain, app } from 'electron';
+import fs from 'fs';
+import path from 'path';
+
+// 复制文件并在文件开头添加路径信息的函数
+function copyFileWithHeader(src: string, dest: string) {
+  fs.copyFileSync(src, dest);
+  const header = `本文件位于：${dest}\n`;
+  const content = fs.readFileSync(dest, 'utf8');
+  fs.writeFileSync(dest, header + content, 'utf8');
+}
+
+// 设置文件环境的函数
+function setupFileEnvironment() {
+  if (process.env.NODE_ENV !== 'development') {
+    const userDataPath = app.getPath('userData');
+    const destFilePath = path.join(userDataPath, 'DataReadMe.md');
+    // 这里的路径是正确的，它直接使用 app.getAppPath() 指向项目根目录
+    const srcFilePath = path.join(app.getAppPath(), 'static', 'data', 'DataReadMe.md');
+
+    if (!fs.existsSync(destFilePath)) {
+      copyFileWithHeader(srcFilePath, destFilePath);
+    }
+  }
+}
+
+// 处理读取文件请求的函数
+function handleReadFileRequest(event) {
+  const userDataPath = app.getPath('userData');
+  // 在开发环境中，需要添加 '..' 来从 electron-utils 文件夹返回到项目根目录
+  const filePath = process.env.NODE_ENV === 'development'
+    ? path.join(__dirname, '..', 'static', 'data', 'DataReadMe.md') 
+    : path.join(userDataPath, 'DataReadMe.md');
+
+  const data = fs.readFileSync(filePath, 'utf8');
+  event.reply('file-content', data);
+}
+
+// 处理写入文件请求的函数
+function handleWriteFileRequest(event, updatedContent) {
+  const userDataPath = app.getPath('userData');
+  // 在开发环境中，需要添加 '..' 来从 electron-utils 文件夹返回到项目根目录
+  const filePath = process.env.NODE_ENV === 'development'
+    ? path.join(__dirname, '..', 'static', 'data', 'DataReadMe.md') 
+    : path.join(userDataPath, 'DataReadMe.md');
+
+  fs.writeFileSync(filePath, updatedContent, 'utf8');
+}
+
+// 初始化 DataReadMe 模块的函数
+export function initDataReadMeModule() {
+  setupFileEnvironment();
+  
+  ipcMain.on('read-file', handleReadFileRequest);
+  ipcMain.on('write-file', handleWriteFileRequest);
+}
+
+----.gitkeep----
+
+----buttons.ico----
+buttons.ico is a non-text file
+----heart.ico----
+heart.ico is a non-text file
+----database.db----
+
+----DataReadMe.md----
+# Data ReadMe
+
+new new
+----App.vue----
+<script setup lang="ts">
+import { ElConfigProvider } from 'element-plus'
+import SideBar from './components/SideBar.vue';
+
+const zIndex = 3000
+const size = 'small' as 'small'
+</script>
+
+<template>
+  <div>
+  <el-config-provider :size="size" :z-index="zIndex">
+  <div class="common-layout">
+    <el-container>
+      <el-aside width="200px">
+      <SideBar/>
+      </el-aside>
+        <el-main><router-view/></el-main>
+    </el-container>
+  </div>
+  </el-config-provider>
+</div>
+</template>
+
+<style scoped>
+.el-main {
+  --el-main-padding: 0px;
+}
+
+</style>
+
+----auto-imports.d.ts----
+/* eslint-disable */
+/* prettier-ignore */
+// @ts-nocheck
+// noinspection JSUnusedGlobalSymbols
+// Generated by unplugin-auto-import
+export {}
+declare global {
+
+}
+
+----components.d.ts----
+/* eslint-disable */
+/* prettier-ignore */
+// @ts-nocheck
+// Generated by unplugin-vue-components
+// Read more: https://github.com/vuejs/core/pull/3399
+export {}
+
+declare module 'vue' {
+  export interface GlobalComponents {
+    ElAside: typeof import('element-plus/es')['ElAside']
+    ElButton: typeof import('element-plus/es')['ElButton']
+    ElCard: typeof import('element-plus/es')['ElCard']
+    ElCol: typeof import('element-plus/es')['ElCol']
+    ElContainer: typeof import('element-plus/es')['ElContainer']
+    ElDivider: typeof import('element-plus/es')['ElDivider']
+    ElHeader: typeof import('element-plus/es')['ElHeader']
+    ElIcon: typeof import('element-plus/es')['ElIcon']
+    ElMain: typeof import('element-plus/es')['ElMain']
+    ElMenu: typeof import('element-plus/es')['ElMenu']
+    ElMenuItem: typeof import('element-plus/es')['ElMenuItem']
+    ElRow: typeof import('element-plus/es')['ElRow']
+    ElSpace: typeof import('element-plus/es')['ElSpace']
+    RouterLink: typeof import('vue-router')['RouterLink']
+    RouterView: typeof import('vue-router')['RouterView']
+  }
+  export interface ComponentCustomProperties {
+    vInfiniteScroll: typeof import('element-plus/es')['ElInfiniteScroll']
+  }
+}
+
+----index.html----
+<!DOCTYPE html>
+<html lang="en" class="dark">
+  <head>
+    <meta charset="utf-8">
+    <title>老何五金厂</title>
+  </head>
+  <body>
+    <div id="app"></div>
+    <script type="module" src="./main.ts"></script>
+  </body>
+</html>
+
+----main.ts----
+// 导入 Vue 函数
+import { createApp } from 'vue'
+// 导入 App 组件
+import App from './App.vue'
+// 导入 Pinia 状态管理库
+import { createPinia } from 'pinia'
+// 导入 Vue 路由
+import router from './router'
+
+// 导入样式文件
+import './style.css';
+// 导入 Element Plus 的暗色主题样式
+import 'element-plus/theme-chalk/dark/css-vars.css'
+
+// 创建 Vue 应用实例
+const app = createApp(App);
+// 创建 Pinia 实例
+const pinia = createPinia()
+// 使用 Pinia 和 Vue 路由
+app.use(pinia)
+app.use(router)
+// 将 Vue 应用挂载到 DOM 元素上
+app.mount('#app');
+
+----style.css----
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%; /* 确保占满整个视口高度 */
+    user-select: none; /* 禁止文本被选中 */
+  }
+  
+----tsconfig.json----
+{
+  "compilerOptions": {
+    "target": "esnext", // 指定 ECMAScript 目标版本为最新
+    "useDefineForClassFields": true, // 使用定义类字段的方式
+    "module": "esnext", // 使用最新的 ES 模块系统
+    "moduleResolution": "node", // 使用 Node.js 风格的模块解析
+    "strict": true, // 启用所有严格类型检查选项
+    "jsx": "preserve", // JSX 代码保持原样，由其他工具处理
+    "sourceMap": true, // 生成源代码映射，方便调试
+    "resolveJsonModule": true, // 允许导入 JSON 模块
+    "esModuleInterop": true, // 允许默认导入非 ES 模块
+    "lib": ["esnext", "dom"], // 指定编译时包含的库文件
+    "types": ["vite/client"], // 包含的类型声明文件
+  },
+  "include": [
+    // 指定编译器要包含的文件
+    "./**/*.ts",
+    "./**/*.d.ts",
+    "./**/*.tsx",
+    "./**/*.vue"
+  ],
+  "exclude": [
+    "node_modules" // 排除的文件或目录
+  ]
+}
+
+
+//这个 tsconfig.json 文件是 TypeScript 的配置文件，用于指定如何编译 TypeScript 代码，特别是针对 Vue 应用的渲染器部分。
+//这个配置文件主要用于控制 TypeScript 编译器如何处理 Vue 应用中的渲染器部分的代码，包括编译输出的 JavaScript 代码的版本、模块系统、严格模式等。它还定义了哪些文件或目录应该被编译器包含或排除。
+----HelloWorld.vue----
+<script setup lang="ts">
+import { ref } from 'vue'
+
+defineProps({
+  msg: String,
+})
+
+const count = ref(0)
+</script>
+
+<template>
+  <h1>{{ msg }}</h1>
+
+  <div class="card">
+    <button type="button" @click="count++">count is {{ count }}</button>
+    <p>
+      Edit
+      <code>components/HelloWorld.vue</code> to test HMR
+    </p>
+  </div>
+  <p>
+    Install
+    <a href="https://github.com/johnsoncodehk/volar" target="_blank">Volar</a>
+    in your IDE for a better DX
+  </p>
+  <p class="read-the-docs">Click on the Vite and Vue logos to learn more</p>
+</template>
+
+<style scoped>
+.read-the-docs {
+  color: #888;
+}
+</style>
+
+----SideBar.vue----
+<template>
+    <el-row class="tac">
+      <el-col>
+        <el-menu class="el-menu-vertical-demo">
+          <el-menu-item index="1">
+            <router-link to="/customer" style="text-decoration: none; color: inherit;">
+            <el-icon><avatar /></el-icon>
+            <span>商家管理</span>
+          </router-link>
+          </el-menu-item>
+          <el-menu-item index="2">
+            <el-icon><list /></el-icon>
+            <span>创建订单</span>
+          </el-menu-item>
+          <el-menu-item index="3">
+            <el-icon><Search /></el-icon>
+            <span>查看订单</span>
+          </el-menu-item>
+          <el-menu-item index="4">
+            <el-icon><Printer /></el-icon>
+            <span>核销订单</span>
+          </el-menu-item>
+          <el-menu-item index="5">
+            <router-link to="/datareadme" style="text-decoration: none; color: inherit;">
+            <el-icon><Printer /></el-icon>
+            <span>数据说明</span>
+          </router-link>
+          </el-menu-item>
+        </el-menu>
+      </el-col>
+    </el-row>
+  </template>
+  
+  <script lang="ts" setup>
+  import {
+    Avatar,
+    List,
+    Search,
+    Printer,
+  } from '@element-plus/icons-vue'
+  </script> 
+
+  
+
+<style scoped>
+.el-menu-vertical-demo {
+  height: 100vh; 
+  display: flex; /* 使用Flex布局 */
+  flex-direction: column; /* 子元素垂直排列 */
+}
+
+.el-menu-item {
+  flex-grow: 1; /* 平分高度 */
+  display: flex; /* 使用Flex布局 */
+  align-items: center; /* 垂直居中 */
+  justify-content: center; /* 水平居中 */
+  background-color: #f5f5f5; /* 默认背景色 */
+}
+
+/* 不同层次的灰色 */
+.el-menu-item:nth-child(1) {
+  background: linear-gradient(180deg, #6D888F, #658689);
+}
+.el-menu-item:nth-child(2) {
+  background: linear-gradient(180deg, #658689, #5F8380);
+}
+.el-menu-item:nth-child(3) {
+  background: linear-gradient(180deg, #5F8380, #5C8077);
+}
+
+.el-menu-item:nth-child(4) {
+  background: linear-gradient(180deg, #5C8077, #5C7D6C);
+}
+
+.el-menu-item:nth-child(5) {
+  background: linear-gradient(180deg, #5C7D6C, #578764);
+}
+
+.el-menu-item.is-active {
+  color: #FFDD00; /* Set text color to black */
+  font-weight: bold; /* 设置字体加粗 */
+}
+</style>
+                                   
+
+----vite.svg----
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" class="iconify iconify--logos" width="31.88" height="32" preserveAspectRatio="xMidYMid meet" viewBox="0 0 256 257"><defs><linearGradient id="IconifyId1813088fe1fbc01fb466" x1="-.828%" x2="57.636%" y1="7.652%" y2="78.411%"><stop offset="0%" stop-color="#41D1FF"></stop><stop offset="100%" stop-color="#BD34FE"></stop></linearGradient><linearGradient id="IconifyId1813088fe1fbc01fb467" x1="43.376%" x2="50.316%" y1="2.242%" y2="89.03%"><stop offset="0%" stop-color="#FFEA83"></stop><stop offset="8.333%" stop-color="#FFDD35"></stop><stop offset="100%" stop-color="#FFA800"></stop></linearGradient></defs><path fill="url(#IconifyId1813088fe1fbc01fb466)" d="M255.153 37.938L134.897 252.976c-2.483 4.44-8.862 4.466-11.382.048L.875 37.958c-2.746-4.814 1.371-10.646 6.827-9.67l120.385 21.517a6.537 6.537 0 0 0 2.322-.004l117.867-21.483c5.438-.991 9.574 4.796 6.877 9.62Z"></path><path fill="url(#IconifyId1813088fe1fbc01fb467)" d="M185.432.063L96.44 17.501a3.268 3.268 0 0 0-2.634 3.014l-5.474 92.456a3.268 3.268 0 0 0 3.997 3.378l24.777-5.718c2.318-.535 4.413 1.507 3.936 3.838l-7.361 36.047c-.495 2.426 1.782 4.5 4.151 3.78l15.304-4.649c2.372-.72 4.652 1.36 4.15 3.788l-11.698 56.621c-.732 3.542 3.979 5.473 5.943 2.437l1.313-2.028l72.516-144.72c1.215-2.423-.88-5.186-3.54-4.672l-25.505 4.922c-2.396.462-4.435-1.77-3.759-4.114l16.646-57.705c.677-2.35-1.37-4.583-3.769-4.113Z"></path></svg>
+----vue.svg----
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" class="iconify iconify--logos" width="37.07" height="36" preserveAspectRatio="xMidYMid meet" viewBox="0 0 256 198"><path fill="#41B883" d="M204.8 0H256L128 220.8L0 0h97.92L128 51.2L157.44 0h47.36Z"></path><path fill="#41B883" d="m0 0l128 220.8L256 0h-51.2L128 132.48L50.56 0H0Z"></path><path fill="#35495E" d="M50.56 0L128 133.12L204.8 0h-47.36L128 51.2L97.92 0H50.56Z"></path></svg>
+----index.ts----
+import { createRouter, createWebHistory } from 'vue-router'
+import Home from '../views/Home.vue'
+import About from '../views/About.vue'
+import Customer from '../views/Customer.vue'
+import DataReadMe from '../views/DataReadMe.vue'
+
+const routes = [
+  { path: '/', component: Home },
+  { path: '/about', component: About },
+  {
+    path: '/customer', // 你希望用于导航到 Customer 组件的路径
+    name: 'Customer',
+    component: Customer
+  },
+  {
+    path: '/datareadme', // 你希望用于导航到 DataReadMe 组件的路径
+    name: 'DataReadMe',
+    component: DataReadMe
+  }
+]
+
+const router = createRouter({
+  history: createWebHistory(),
+  routes,
+})
+
+export default router
+----index.ts----
+import { defineStore } from 'pinia'
+
+export const useMainStore = defineStore('main', {
+  // state, actions, and getters
+})
+----electron.d.ts----
+/*
+  这个文件的主要作用是在 TypeScript 中声明全局的 window 对象上的 electronAPI 和 electron 属性，从而使渲染器进程能够以类型安全的方式访问 Electron 提供的 API。
+ * 应与 main/preload.ts 中的类型匹配，以在渲染器中提供 TypeScript 支持
+ */
+export default interface ElectronApi {
+  sendMessage: (message: string) => void // 定义一个方法用于发送消息
+}
+
+declare global {
+  interface Window {
+    electronAPI: ElectronApi, // 在全局 Window 对象上声明 electronAPI，具有 ElectronApi 接口
+    electron: {
+      send: (channel: string, data?: any) => void; // 定义一个方法用于发送 IPC 消息
+      on: (channel: string, func: (...args: any[]) => void) => void; // 定义一个方法用于监听 IPC 消息
+    }
+  }
+}
+
+----shims-vue.d.ts----
+//这个文件的作用是让 TypeScript 理解 .vue 文件的导入。在 Vue 项目中，.vue 文件是单文件组件（SFC），该声明文件确保 TypeScript 能够正确处理这些文件的导入，从而使得类型检查和自动补全等功能能够在 .vue 文件中正常工作。
+//shims" 指的是一个小的库或工具，其目的是充当一个兼容层，使旧的 API 能够与新的 API 一起使用，或使不同的软件组件能够一起工作。
+
+// 声明一个模块，用于处理以 .vue 结尾的文件
+declare module '*.vue' {
+  // 从 vue 包中导入 DefineComponent 类型
+  import type { DefineComponent } from 'vue'
+
+  // 定义一个 component 常量，它是一个 DefineComponent 类型
+  const component: DefineComponent<{}, {}, any>
+  // 导出这个 component
+  export default component
+}
+
+----About.vue----
+<template>22</template>
+
+<script></script>
+
+<style></style>
+----Customer.vue----
+<script lang="ts" setup>
+import { ref } from 'vue'
+
+
+/*设置无限滚动*/
+const count = ref(0)
+const load = () => {
+  count.value += 2
+}
+
+
+
+/*设置spacer自动填充空隙*/
+const fillRatio = ref(30)
+
+
+/*设置添加商家按钮样式*/
+const buttonStyle = ref({
+  background: 'linear-gradient(90deg, #6D888F, #5C7D6C)',
+});
+</script>
+
+
+<template>
+    <div class="common-layout">
+      <el-container>
+        <el-header class="custom-header">
+          <el-button :style="buttonStyle" class="custom-active-button" type="info">新增客户</el-button>
+        </el-header>
+        <el-main v-infinite-scroll="load" class="main-content">
+            <el-space fill      
+            :fill-ratio="fillRatio"
+            wrap :size="30" shadow="hover" style="width: 100%">
+        <el-card v-for="i in 200" :key="i" class="box-card" style="width: 250px">
+        <template #header>
+        <div class="card-header">
+          <span>商户名</span>
+          <el-button class="button" text>修改信息</el-button>
+        </div>
+      </template>
+      <div v-for="o in 4" :key="o" class="text item">
+        {{ 'List item ' + o }}
+      </div>
+    </el-card>
+    </el-space>
+    </el-main>
+    </el-container>
+    </div>
+  </template>
+  
+  <style scoped>
+  .common-layout {
+    height: 100vh; /* 100%视口高度 */
+  }
+  
+  .custom-header {
+    display: flex;
+    justify-content: center; /* 水平居中 */
+    align-items: center; /* 垂直居中 */
+    padding: 10px 0px 10px 0px;
+    border-bottom: 1px dashed white; /* 下边界的白色虚线 */
+    height: calc(100% - 20px); /* 高度减去上下内边距 */
+  }
+  
+  .el-header .el-button {
+    width: calc(100% - 20px); /* 宽度为header宽度减去左右的内边距 */
+    height: calc(100% - 20px); /* 高度为header高度减去上下的内边距 */
+    text-align: center; /* 文字水平居中 */
+    font-size: 30px; /* 文字大小随着宽度等比例变化 */
+    padding: 10px; /* 内边距 */
+    box-sizing: border-box; /* 使padding包含在宽高计算内 */
+  }
+
+  .card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+  .main-content {
+  overflow: hidden;
+}
+
+.custom-active-button{
+  color: '#FFDD00', /* 设置文本颜色为白色*/
+}
+
+.custom-active-button:active {
+  color: #FFDD00; /* 黄色文本 */
+  font-weight: bold; /* 加粗字体 */
+}
+  </style>
+----DataReadMe.vue----
+<script setup lang="ts">
+import { ref, onMounted } from 'vue';
+
+const content = ref<string>('');
+const isReadOnly = ref<boolean>(true);
+
+onMounted(() => {
+  window.electron.send('read-file');
+  window.electron.on('file-content', (data) => {
+    content.value = data;
+  });
+});
+
+
+const toggleEdit = () => {
+  isReadOnly.value = !isReadOnly.value;
+};
+
+const submitChanges = () => {
+  window.electron.send('write-file', content.value);
+  isReadOnly.value = true;
+};
+</script>
+
+
+<template>
+    <el-row class="centered-row">
+      <el-button type="primary" @click="toggleEdit">编辑</el-button>
+      <el-button type="success" @click="submitChanges">提交</el-button>
+    </el-row>
+  
+    <el-divider style="margin-top: 0px;"/>
+  
+    <el-row>
+      <textarea class="full-width-textarea" v-model="content" :readonly="isReadOnly" cols="30" rows="10"></textarea>
+    </el-row>
+  </template>
+  
+  <style scoped>
+  .centered-row {
+    display: flex;
+    justify-content: center; /* 水平居中 */
+    align-items: center; /* 垂直居中 */
+    height: 50px; /* 设置一个固定高度 */
+  }
+  
+  .full-width-textarea {
+    width: 100%; /* 宽度填充满容器 */
+    box-sizing: border-box; /* 边框和内边距的空间包含在宽度内 */
+  }
+  </style>
+  
+----Home.vue----
+<template>22</template>
+
+<script></script>
+
+<style></style>
