@@ -1,6 +1,7 @@
 import { app, BrowserWindow, ipcMain } from 'electron';
 import path from 'path';
 import { initDataReadMeModule } from './electron-utils/DataReadMe';
+import { setupWindowControl } from './electron-utils/WindowBar';
 
 // 设置窗口图标路径
 const iconPath = process.env.NODE_ENV === 'development'
@@ -8,15 +9,20 @@ const iconPath = process.env.NODE_ENV === 'development'
   : path.join(app.getAppPath(), 'static', 'buttons.ico');
 
 
+
+let mainWindow; // 将 mainWindow 定义在顶层作用域
+
 // 创建浏览器窗口的函数
 function createWindow() {
-  const mainWindow = new BrowserWindow({
+  mainWindow = new BrowserWindow({
+    frame: false,
     icon: iconPath, // 设置窗口图标
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       nodeIntegration: false,
       contextIsolation: true,
     },
+    backgroundColor: '#000000', // 设置背景颜色为黑色
   });
 
   mainWindow.maximize(); // 打开窗口默认最大化
@@ -37,6 +43,7 @@ function createWindow() {
 // 当Electron应用准备就绪后执行
 app.whenReady().then(() => {
   createWindow(); // 创建窗口
+  setupWindowControl(mainWindow); // 使用 setupWindowControl
   initDataReadMeModule(); // 初始化 DataReadMe 模块
 });
 
@@ -46,4 +53,3 @@ app.whenReady().then(() => {
 app.on('window-all-closed', function () {
   if (process.platform !== 'darwin') app.quit();
 });
-

@@ -3,5 +3,7 @@ html, body {
     padding: 0;
     height: 100%; /* 确保占满整个视口高度 */
     user-select: none; /* 禁止文本被选中 */
+    background-color: black; 
+    color: white;
   }
   

@@ -14,5 +14,8 @@ contextBridge.exposeInMainWorld('electron', {
   // 提供 on 方法，用于监听主进程发送的 IPC 消息
   on: (channel, func) => {
     ipcRenderer.on(channel, (event, ...args) => func(...args));
-  }
+  },
+  minimizeWindow: () => ipcRenderer.send('minimize-window'),
+  toggleMaximizeRestore: () => ipcRenderer.send('toggle-maximize-restore'),
+  closeWindow: () => ipcRenderer.send('close-window')
 });
