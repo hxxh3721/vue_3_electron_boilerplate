@@ -1,0 +1,181 @@
+.git/
+--COMMIT_EDITMSG
+--HEAD
+--config
+--description
+--hooks/
+----applypatch-msg.sample
+----commit-msg.sample
+----fsmonitor-watchman.sample
+----post-update.sample
+----pre-applypatch.sample
+----pre-commit.sample
+----pre-merge-commit.sample
+----pre-push.sample
+----pre-rebase.sample
+----pre-receive.sample
+----prepare-commit-msg.sample
+----push-to-checkout.sample
+----sendemail-validate.sample
+----update.sample
+--index
+--info/
+----exclude
+--logs/
+----HEAD
+----refs/
+------heads/
+--------master
+------remotes/
+--------origin/
+----------HEAD
+----------master
+--objects/
+----1c/
+------3e3dfbcfa4d505582d272d6d9974fb4b2ff975
+----24/
+------3c8df2608835d4f28251ac3f4a8c9fec7abf4d
+----2e/
+------360771cd7d577713c97d94ceb8344c1e5bd374
+----45/
+------ac7d5d2b4d01b2e1f993d75d5a239a93b8ad8e
+----48/
+------74fe181ef82ddd4d40c8dd03e0eeacbca6e9e4
+----69/
+------82aafbdcd387d55e038aec07e161169dbb18f3
+----9f/
+------14573029fc9b9badd37437a21392af154bb8ca
+----ab/
+------11beec612c38f6181d3e570d426936983963e4
+----b3/
+------b647ac24745d813a632cf28b84fb7a3089a89c
+----c4/
+------54687cbfb6df2a53899633909eb3680987b0b0
+----ea/
+------12692ffc47504a2f3447cba3519508a2e60d36
+----eb/
+------55dbf1f777d866f064623d687b335d7b337207
+----ed/
+------87872f35ce1c5c5ef3a858b2f9ddfb5dab567f
+----info/
+----pack/
+------pack-c6a0f1d3840d1eef99ac177eaa40fc891e519892.idx
+------pack-c6a0f1d3840d1eef99ac177eaa40fc891e519892.pack
+------pack-c6a0f1d3840d1eef99ac177eaa40fc891e519892.rev
+--packed-refs
+--refs/
+----heads/
+------master
+----remotes/
+------origin/
+--------HEAD
+--------master
+----tags/
+.gitignore
+LICENSE
+README.md
+electron-builder.json
+electron-builder.txt
+package-lock.json
+package.json
+project_structure_generator.py
+scripts/
+--build.js
+--dev-server.js
+--private/
+----tsc.js
+src/
+--main/
+----electron-utils/
+------DataReadMe.ts
+------WindowBar.ts
+----main.ts
+----preload.ts
+----static/
+------.gitkeep
+------data/
+--------DataReadMe.md
+--------database.db
+------logo.ico
+----tsconfig.json
+--renderer/
+----App.vue
+----auto-imports.d.ts
+----components/
+------SideBar.vue
+------WindowBar.vue
+----components.d.ts
+----index.html
+----main.ts
+----public/
+------others/
+------windowbar/
+--------1.png
+--------11.png
+--------2.png
+--------22.png
+--------3.png
+--------33.png
+----router/
+------index.ts
+----store/
+------index.ts
+----style.css
+----tsconfig.json
+----typings/
+------electron.d.ts
+------shims-vue.d.ts
+----views/
+------About.vue
+------Customer.vue
+------CustomerAdd.vue
+------DataReadMe.vue
+------Home.vue
+------OrderAdd.vue
+------OrderManage.vue
+------OrderSubmit.vue
+vite.config.js
+
+----electron-builder.json----
+{
+    "appId": "com.electron.app",
+    "directories": {
+      "output": "dist"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true, 
+      "shortcutName": "Electron App"
+    },
+    "win": {
+      "target": "nsis",
+      "icon": "src/main/static/buttons.ico"
+    },
+    "linux": {
+      "target": ["snap"]
+    },
+    "files": [
+      "build/main/**/*",
+      {
+        "from": "build/renderer",
+        "to": "renderer",
+        "filter": ["**/*"]
+      },
+      {
+        "from": "src/main/static",
+        "to": "static",
+        "filter": ["**/*"]
+      },
+      "!**/node_modules/*/{CHANGELOG.md,README.md,README,readme.md,readme}",
+      "!**/node_modules/*/{test,__tests__,tests,powered-test,example,examples}",
+      "!**/node_modules/*.d.ts",
+      "!**/node_modules/.bin",
+      "!src",
+      "!config",
+      "!README.md",
+      "!scripts",
+      "!build/renderer",
+      "!dist"
+    ]
+  }

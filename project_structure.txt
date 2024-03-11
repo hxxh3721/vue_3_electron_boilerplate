@@ -1,4 +1,5 @@
 .git/
+--COMMIT_EDITMSG
 --HEAD
 --config
 --description
@@ -28,12 +29,39 @@
 ------remotes/
 --------origin/
 ----------HEAD
+----------master
 --objects/
+----1c/
+------3e3dfbcfa4d505582d272d6d9974fb4b2ff975
+----24/
+------3c8df2608835d4f28251ac3f4a8c9fec7abf4d
+----2e/
+------360771cd7d577713c97d94ceb8344c1e5bd374
+----45/
+------ac7d5d2b4d01b2e1f993d75d5a239a93b8ad8e
+----48/
+------74fe181ef82ddd4d40c8dd03e0eeacbca6e9e4
+----69/
+------82aafbdcd387d55e038aec07e161169dbb18f3
+----9f/
+------14573029fc9b9badd37437a21392af154bb8ca
+----ab/
+------11beec612c38f6181d3e570d426936983963e4
+----b3/
+------b647ac24745d813a632cf28b84fb7a3089a89c
+----c4/
+------54687cbfb6df2a53899633909eb3680987b0b0
+----ea/
+------12692ffc47504a2f3447cba3519508a2e60d36
+----eb/
+------55dbf1f777d866f064623d687b335d7b337207
+----ed/
+------87872f35ce1c5c5ef3a858b2f9ddfb5dab567f
 ----info/
 ----pack/
-------pack-ea55dcccc444412d34712a877422ff34923bd084.idx
-------pack-ea55dcccc444412d34712a877422ff34923bd084.pack
-------pack-ea55dcccc444412d34712a877422ff34923bd084.rev
+------pack-c6a0f1d3840d1eef99ac177eaa40fc891e519892.idx
+------pack-c6a0f1d3840d1eef99ac177eaa40fc891e519892.pack
+------pack-c6a0f1d3840d1eef99ac177eaa40fc891e519892.rev
 --packed-refs
 --refs/
 ----heads/
@@ -41,6 +69,7 @@
 ----remotes/
 ------origin/
 --------HEAD
+--------master
 ----tags/
 .gitignore
 LICENSE
@@ -49,8 +78,8 @@ electron-builder.json
 electron-builder.txt
 package-lock.json
 package.json
-project_content_generator.py
 project_structure_generator.py
+pure-structure.txt
 scripts/
 --build.js
 --dev-server.js
@@ -60,28 +89,34 @@ src/
 --main/
 ----electron-utils/
 ------DataReadMe.ts
+------WindowBar.ts
 ----main.ts
 ----preload.ts
 ----static/
 ------.gitkeep
-------buttons.ico
 ------data/
 --------DataReadMe.md
 --------database.db
-------heart.ico
+------logo.ico
 ----tsconfig.json
 --renderer/
 ----App.vue
 ----auto-imports.d.ts
 ----components/
-------HelloWorld.vue
 ------SideBar.vue
+------WindowBar.vue
 ----components.d.ts
 ----index.html
 ----main.ts
 ----public/
-------vite.svg
-------vue.svg
+------others/
+------windowbar/
+--------1.png
+--------11.png
+--------2.png
+--------22.png
+--------3.png
+--------33.png
 ----router/
 ------index.ts
 ----store/
@@ -94,8 +129,12 @@ src/
 ----views/
 ------About.vue
 ------Customer.vue
+------CustomerAdd.vue
 ------DataReadMe.vue
 ------Home.vue
+------OrderAdd.vue
+------OrderManage.vue
+------OrderSubmit.vue
 vite.config.js
 
 ----electron-builder.json----
@@ -242,48 +281,6 @@ SOFTWARE.
   }
 }
 
-----project_content_generator.py----
-"""
-.git 和 node_modules 文件夹。
-build和dist文件夹。
-package-lock.json, .gitignore, 
-builder-debug.yml, 
-builder-effective-config.yaml, 
-latest.yml 文件。
-名称中包含 "licenses" 的文件（不区分大小写）。
-
-"""
-
-import os
-
-def read_and_combine_files(directory):
-    output_filename = os.path.join(directory, "combined_output.txt")
-    with open(output_filename, "w", encoding="utf-8") as output_file:
-        for root, dirs, files in os.walk(directory):
-            # 排除指定的目录
-            dirs[:] = [d for d in dirs if d not in ['.git', 'node_modules', 'build', 'dist']]
-            for filename in files:
-                # 排除指定的文件和文件名
-                if filename in ["package-lock.json", ".gitignore", "builder-debug.yml", 
-                                "builder-effective-config.yaml", "latest.yml"]:
-                    continue
-                if "licenses" in filename.lower():
-                    continue
-                file_path = os.path.join(root, filename)
-                output_file.write(f"----{filename}----\n")
-                try:
-                    with open(file_path, "r", encoding="utf-8") as file:
-                        content = file.read()
-                        output_file.write(content)
-                except UnicodeDecodeError:
-                    output_file.write(f"{filename} is a non-text file")
-                except Exception as e:
-                    output_file.write(f"Error reading file: {e}")
-                output_file.write("\n\n")
-
-current_directory = os.path.dirname(os.path.realpath(__file__))
-read_and_combine_files(current_directory)
-
 ----project_structure_generator.py----
 import os
 
@@ -357,6 +354,188 @@ save_to_file(project_structure, combined_content, os.path.join(script_directory,
 
 print("Project structure and file contents saved to 'project_structure.txt'")
 
+----pure-structure.txt----
+.git/
+--COMMIT_EDITMSG
+--HEAD
+--config
+--description
+--hooks/
+----applypatch-msg.sample
+----commit-msg.sample
+----fsmonitor-watchman.sample
+----post-update.sample
+----pre-applypatch.sample
+----pre-commit.sample
+----pre-merge-commit.sample
+----pre-push.sample
+----pre-rebase.sample
+----pre-receive.sample
+----prepare-commit-msg.sample
+----push-to-checkout.sample
+----sendemail-validate.sample
+----update.sample
+--index
+--info/
+----exclude
+--logs/
+----HEAD
+----refs/
+------heads/
+--------master
+------remotes/
+--------origin/
+----------HEAD
+----------master
+--objects/
+----1c/
+------3e3dfbcfa4d505582d272d6d9974fb4b2ff975
+----24/
+------3c8df2608835d4f28251ac3f4a8c9fec7abf4d
+----2e/
+------360771cd7d577713c97d94ceb8344c1e5bd374
+----45/
+------ac7d5d2b4d01b2e1f993d75d5a239a93b8ad8e
+----48/
+------74fe181ef82ddd4d40c8dd03e0eeacbca6e9e4
+----69/
+------82aafbdcd387d55e038aec07e161169dbb18f3
+----9f/
+------14573029fc9b9badd37437a21392af154bb8ca
+----ab/
+------11beec612c38f6181d3e570d426936983963e4
+----b3/
+------b647ac24745d813a632cf28b84fb7a3089a89c
+----c4/
+------54687cbfb6df2a53899633909eb3680987b0b0
+----ea/
+------12692ffc47504a2f3447cba3519508a2e60d36
+----eb/
+------55dbf1f777d866f064623d687b335d7b337207
+----ed/
+------87872f35ce1c5c5ef3a858b2f9ddfb5dab567f
+----info/
+----pack/
+------pack-c6a0f1d3840d1eef99ac177eaa40fc891e519892.idx
+------pack-c6a0f1d3840d1eef99ac177eaa40fc891e519892.pack
+------pack-c6a0f1d3840d1eef99ac177eaa40fc891e519892.rev
+--packed-refs
+--refs/
+----heads/
+------master
+----remotes/
+------origin/
+--------HEAD
+--------master
+----tags/
+.gitignore
+LICENSE
+README.md
+electron-builder.json
+electron-builder.txt
+package-lock.json
+package.json
+project_structure_generator.py
+scripts/
+--build.js
+--dev-server.js
+--private/
+----tsc.js
+src/
+--main/
+----electron-utils/
+------DataReadMe.ts
+------WindowBar.ts
+----main.ts
+----preload.ts
+----static/
+------.gitkeep
+------data/
+--------DataReadMe.md
+--------database.db
+------logo.ico
+----tsconfig.json
+--renderer/
+----App.vue
+----auto-imports.d.ts
+----components/
+------SideBar.vue
+------WindowBar.vue
+----components.d.ts
+----index.html
+----main.ts
+----public/
+------others/
+------windowbar/
+--------1.png
+--------11.png
+--------2.png
+--------22.png
+--------3.png
+--------33.png
+----router/
+------index.ts
+----store/
+------index.ts
+----style.css
+----tsconfig.json
+----typings/
+------electron.d.ts
+------shims-vue.d.ts
+----views/
+------About.vue
+------Customer.vue
+------CustomerAdd.vue
+------DataReadMe.vue
+------Home.vue
+------OrderAdd.vue
+------OrderManage.vue
+------OrderSubmit.vue
+vite.config.js
+
+----electron-builder.json----
+{
+    "appId": "com.electron.app",
+    "directories": {
+      "output": "dist"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true, 
+      "shortcutName": "Electron App"
+    },
+    "win": {
+      "target": "nsis",
+      "icon": "src/main/static/buttons.ico"
+    },
+    "linux": {
+      "target": ["snap"]
+    },
+    "files": [
+      "build/main/**/*",
+      {
+        "from": "build/renderer",
+        "to": "renderer",
+        "filter": ["**/*"]
+      },
+      {
+        "from": "src/main/static",
+        "to": "static",
+        "filter": ["**/*"]
+      },
+      "!**/node_modules/*/{CHANGELOG.md,README.md,README,readme.md,readme}",
+      "!**/node_modules/*/{test,__tests__,tests,powered-test,example,examples}",
+      "!**/node_modules/*.d.ts",
+      "!**/node_modules/.bin",
+      "!src",
+      "!config",
+      "!README.md",
+      "!scripts",
+      "!build/renderer",
+      "!dist"
+    ]
+  }
 ----README.md----
 <div align="center"> 
 
@@ -441,6 +620,7 @@ import Components from 'unplugin-vue-components/vite'
 import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
 import vue from '@vitejs/plugin-vue'
 import vuePlugin from '@vitejs/plugin-vue';
+import path from 'path';
 
 const Path = require('path');
 const { defineConfig } = require('vite');
@@ -456,6 +636,12 @@ const config = defineConfig({
         port: 8080, // 指定服务器端口
     },
     open: false, // 是否在服务器启动时自动打开浏览器
+    //路径优化
+    resolve: {
+    alias: {
+      '@': path.resolve(__dirname, 'src/renderer') }
+      },
+
     // 构建配置
     build: {
         outDir: Path.join(__dirname, 'build', 'renderer'), // 指定输出目录
@@ -474,7 +660,6 @@ const config = defineConfig({
 });
 
 module.exports = config;
-
 ----build.js----
 //build.js 负责构建整个 Electron 应用程序，包括渲染器和主进程。它使用 Vite 来构建渲染器进程，并使用自定义的 TypeScript 编译脚本来编译主进程。
 //它和tsc.js共同确保了您的应用程序可以从源代码正确地编译和构建，为后续的打包和发布做好准备。
@@ -740,75 +925,91 @@ module.exports = compile;
 
 每个项目的组织结构都有其特定的逻辑和原因，这些原因可能因项目、团队习惯或个人偏好而异。 */
 ----main.ts----
+// main.ts
 import { app, BrowserWindow, ipcMain } from 'electron';
 import path from 'path';
 import { initDataReadMeModule } from './electron-utils/DataReadMe';
+import { setupWindowControls } from './electron-utils/WindowBar';
 
 // 设置窗口图标路径
 const iconPath = process.env.NODE_ENV === 'development'
-  ? path.join(__dirname, 'static', 'buttons.ico')
-  : path.join(app.getAppPath(), 'static', 'buttons.ico');
+  ? path.join(__dirname, 'static', 'logo.ico')
+  : path.join(app.getAppPath(), 'static', 'logo.ico');
+
+let mainWindow;
 
 
-// 创建浏览器窗口的函数
 function createWindow() {
-  const mainWindow = new BrowserWindow({
-    icon: iconPath, // 设置窗口图标
+  mainWindow = new BrowserWindow({
+    frame: false,
+    icon: iconPath,
     webPreferences: {
+      devTools: true,
       preload: path.join(__dirname, 'preload.js'),
       nodeIntegration: false,
       contextIsolation: true,
     },
+    backgroundColor: '#000000',
   });
 
-  mainWindow.maximize(); // 打开窗口默认最大化
-  mainWindow.setMenu(null); // 移除菜单栏
+  mainWindow.maximize();
+  // mainWindow.setMenu(null);
 
-  // 在开发模式下，加载开发服务器的URL
   if (process.env.NODE_ENV === 'development') {
     const rendererPort = process.argv[2];
     mainWindow.loadURL(`http://localhost:${rendererPort}`);
   } else {
-    // 在生产模式下，加载编译后的HTML文件
     mainWindow.loadFile(path.join(app.getAppPath(), 'renderer', 'index.html'));
   }
 }
 
 
-
-// 当Electron应用准备就绪后执行
 app.whenReady().then(() => {
-  createWindow(); // 创建窗口
-  initDataReadMeModule(); // 初始化 DataReadMe 模块
+  createWindow();
+  initDataReadMeModule();
+  // 将 windowBar 传递给 IPC 事件处理函数
+  setupWindowControls(mainWindow);
 });
 
-
-
-// 当所有窗口关闭时退出应用（MacOS除外）
 app.on('window-all-closed', function () {
   if (process.platform !== 'darwin') app.quit();
 });
 
 
 ----preload.ts----
-// 引入 Electron 的 contextBridge 和 ipcRenderer 模块
-import {contextBridge, ipcRenderer} from 'electron';
+// preload.ts
+import { contextBridge, ipcRenderer } from 'electron';
 
-// 通过 contextBridge 在渲染器的全局作用域中暴露一个 electronAPI 对象
-contextBridge.exposeInMainWorld('electronAPI', {
-  // 提供 sendMessage 方法，允许渲染器进程通过 ipcRenderer 向主进程发送消息
-  sendMessage: (message: string) => ipcRenderer.send('message', message)
-})
 
-// 再次使用 contextBridge 暴露一个 electron 对象
+
 contextBridge.exposeInMainWorld('electron', {
-  // 提供 send 方法，用于从渲染器进程发送 IPC 消息
-  send: ipcRenderer.send,
-  // 提供 on 方法，用于监听主进程发送的 IPC 消息
-  on: (channel, func) => {
-    ipcRenderer.on(channel, (event, ...args) => func(...args));
-  }
-});
+
+/////////////////////////////////////////////窗口栏缩小方法关闭功能//////////////////////
+    closeWindow: () => ipcRenderer.send('close-window'),
+    minimizeWindow: () => ipcRenderer.send('minimize-window'),
+    maximizeWindow: () => ipcRenderer.send('maximize-window'),
+
+
+/////////////DataReadMe组件读写文件功能///////////////////////////////////////////////
+    send: (channel, data) => {
+        // 向主进程发送消息
+        ipcRenderer.send(channel, data);
+      },
+      on: (channel, func) => {
+        // 从主进程接收消息
+        ipcRenderer.on(channel, (event, ...args) => func(...args));
+      },
+      readTextFile: (filePath) => {
+        // 读取文本文件的方法
+        const fs = require('fs');
+        return fs.readFileSync(filePath, 'utf8');
+      },
+      writeTextFile: (filePath, content) => {
+        // 写入文本文件的方法
+        const fs = require('fs');
+        fs.writeFileSync(filePath, content);
+      }
+})
 
 ----tsconfig.json----
 /*这个配置文件主要用于控制 TypeScript 编译器的行为，包括编译输出的 JavaScript 代码的版本、模块系统、严格模式等。它还定义了哪些文件或目录应该被编译器忽略。*/
@@ -888,22 +1089,36 @@ export function initDataReadMeModule() {
   ipcMain.on('write-file', handleWriteFileRequest);
 }
 
+----WindowBar.ts----
+// 在主进程中使用
+import { ipcMain, BrowserWindow } from 'electron';
+
+export const setupWindowControls = (mainWindow: BrowserWindow) => {
+  ipcMain.on('close-window', () => mainWindow.close());
+  ipcMain.on('minimize-window', () => mainWindow.minimize());
+  ipcMain.on('maximize-window', () => {
+    if (mainWindow.isMaximized()) {
+      mainWindow.restore();
+    } else {
+      mainWindow.maximize();
+    }
+  });
+};
 ----.gitkeep----
 
-----buttons.ico----
-buttons.ico is a non-text file
-----heart.ico----
-heart.ico is a non-text file
+----logo.ico----
+logo.ico is a non-text file
 ----database.db----
 
 ----DataReadMe.md----
 # Data ReadMe
 
-new new
+
 ----App.vue----
 <script setup lang="ts">
-import { ElConfigProvider } from 'element-plus'
+import { ElConfigProvider, formContextKey } from 'element-plus'
 import SideBar from './components/SideBar.vue';
+import  WindowBar from  './components/WindowBar.vue';
 
 const zIndex = 3000
 const size = 'small' as 'small'
@@ -914,10 +1129,15 @@ const size = 'small' as 'small'
   <el-config-provider :size="size" :z-index="zIndex">
   <div class="common-layout">
     <el-container>
+        <WindowBar/>   
+    </el-container>
+    <el-container>
       <el-aside width="200px">
       <SideBar/>
       </el-aside>
-        <el-main><router-view/></el-main>
+      <el-main class="scrollable-container">
+        <router-view/>
+      </el-main>
     </el-container>
   </div>
   </el-config-provider>
@@ -929,6 +1149,20 @@ const size = 'small' as 'small'
   --el-main-padding: 0px;
 }
 
+.el-main, .el-container {
+  flex: 1;
+  overflow: auto; /* 如果内容超出则在此容器内显示滚动条 */
+}
+
+.scrollable-container {
+  flex: 1;
+  overflow: auto;
+}
+
+.common-layout {
+  height: 100vh; /* 确保父容器占满整个视口高度 */
+  overflow: hidden; /* 隐藏超出部分 */
+}
 </style>
 
 ----auto-imports.d.ts----
@@ -959,7 +1193,6 @@ declare module 'vue' {
     ElContainer: typeof import('element-plus/es')['ElContainer']
     ElDivider: typeof import('element-plus/es')['ElDivider']
     ElHeader: typeof import('element-plus/es')['ElHeader']
-    ElIcon: typeof import('element-plus/es')['ElIcon']
     ElMain: typeof import('element-plus/es')['ElMain']
     ElMenu: typeof import('element-plus/es')['ElMenu']
     ElMenuItem: typeof import('element-plus/es')['ElMenuItem']
@@ -1017,6 +1250,8 @@ html, body {
     padding: 0;
     height: 100%; /* 确保占满整个视口高度 */
     user-select: none; /* 禁止文本被选中 */
+    background-color: black; 
+    color: white;
   }
   
 ----tsconfig.json----
@@ -1049,146 +1284,280 @@ html, body {
 
 //这个 tsconfig.json 文件是 TypeScript 的配置文件，用于指定如何编译 TypeScript 代码，特别是针对 Vue 应用的渲染器部分。
 //这个配置文件主要用于控制 TypeScript 编译器如何处理 Vue 应用中的渲染器部分的代码，包括编译输出的 JavaScript 代码的版本、模块系统、严格模式等。它还定义了哪些文件或目录应该被编译器包含或排除。
-----HelloWorld.vue----
-<script setup lang="ts">
-import { ref } from 'vue'
-
-defineProps({
-  msg: String,
-})
-
-const count = ref(0)
-</script>
-
+----SideBar.vue----
 <template>
-  <h1>{{ msg }}</h1>
+  <el-row class="sidebar">
+    <el-col>
+      <el-menu class="menu">
+        
+        <!-- 第一个菜单项 -->
+        <el-menu-item index="1" class="menu-item menu-item-1">
+          <router-link to="/customer" class="button" data-text="客户信息" active-class="active">
+            <span class="actual-text">&nbsp;客户信息&nbsp;</span>
+            <span class="hover-text">&nbsp;客户信息&nbsp;</span>
+          </router-link>
+        </el-menu-item>
 
-  <div class="card">
-    <button type="button" @click="count++">count is {{ count }}</button>
-    <p>
-      Edit
-      <code>components/HelloWorld.vue</code> to test HMR
-    </p>
-  </div>
-  <p>
-    Install
-    <a href="https://github.com/johnsoncodehk/volar" target="_blank">Volar</a>
-    in your IDE for a better DX
-  </p>
-  <p class="read-the-docs">Click on the Vite and Vue logos to learn more</p>
+        <!-- 第二个菜单项 -->
+        <el-menu-item index="2" class="menu-item menu-item-2">
+          <router-link to="/orderadd" class="button" data-text="订单录入" active-class="active">
+            <span class="actual-text">&nbsp;订单录入&nbsp;</span>
+            <span class="hover-text">&nbsp;订单录入&nbsp;</span>
+          </router-link>
+        </el-menu-item>
+
+        
+        <!-- 第三个菜单项 -->
+        <el-menu-item index="3" class="menu-item menu-item-3">
+          <router-link to="/ordersubmit" class="button" data-text="订单结算" active-class="active">
+            <span class="actual-text">&nbsp;订单结算&nbsp;</span>
+            <span class="hover-text">&nbsp;订单结算&nbsp;</span>
+          </router-link>
+        </el-menu-item>
+
+
+        <!-- 第四个菜单项 -->
+        <el-menu-item index="4" class="menu-item menu-item-4">
+          <router-link to="/ordermanage" class="button" data-text="订单管理" active-class="active">
+            <span class="actual-text">&nbsp;订单管理&nbsp;</span>
+            <span class="hover-text">&nbsp;订单管理&nbsp;</span>
+          </router-link>
+        </el-menu-item>
+
+        <!-- 第五个菜单项 -->
+        <el-menu-item index="5" class="menu-item menu-item-5">
+          <router-link to="/analytics" class="button" data-text="分析报告" active-class="active">
+            <span class="actual-text">&nbsp;分析报告&nbsp;</span>
+            <span class="hover-text">&nbsp;分析报告&nbsp;</span>
+          </router-link>
+        </el-menu-item>
+
+        <!-- 第六个菜单项 -->
+        <el-menu-item index="6" class="menu-item menu-item-6">
+          <router-link to="/datareadme" class="button" data-text="数据备份" active-class="active">
+            <span class="actual-text">&nbsp;数据备份&nbsp;</span>
+            <span class="hover-text">&nbsp;数据备份&nbsp;</span>
+          </router-link>
+        </el-menu-item>
+
+
+        <!-- 第七个菜单项 -->
+        <el-menu-item index="7" class="menu-item menu-item-7">
+          <router-link to="/others" class="button" data-text="其它" active-class="active">
+            <span class="actual-text">&nbsp;其它&nbsp;</span>
+            <span class="hover-text">&nbsp;其它&nbsp;</span>
+          </router-link>
+        </el-menu-item>
+
+
+      </el-menu>
+    </el-col>
+  </el-row>
 </template>
 
 <style scoped>
-.read-the-docs {
-  color: #888;
+.sidebar {
+  height: 100vh;
+  overflow: hidden; /* 隐藏溢出部分 */
+}
+
+.menu {
+  background-color: #212121; /* 设置背景色 */
+  height: 100vh;
+  overflow-y: auto; /* 允许垂直滚动 */
+  scrollbar-width: none; /* Firefox 浏览器隐藏滚动条 */
+}
+
+.menu::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera 浏览器隐藏滚动条 */
+}
+
+.menu-item {
+  height: 100px; /* 设置每个菜单项的高度 */
+  border-right: none; /* 去除右边框 */
+  --el-menu-item-height: 30px;
+}
+
+.el-menu-item:hover {
+    background-color: transparent; /* 设置背景色为透明 */
+}
+
+.button {
+  margin: 0;
+  height: auto;
+  background: transparent;
+  padding: 0;
+  border: none;
+  cursor: pointer;
+  --border-right: 6px;
+  --text-stroke-color: rgba(255, 255, 255, 0.6);
+  --fs-size: 1.2em;
+  letter-spacing: 3px;
+  text-decoration: none;
+  font-size: var(--fs-size);
+  font-family: "Arial";
+  position: relative;
+  text-transform: uppercase;
+  color: #fff;
+}
+
+/* 定义不同菜单项的动画颜色 */
+.menu-item-1 .hover-text { --animation-color: #52B788; }
+.menu-item-2 .hover-text { --animation-color: #7CC6FE; }
+.menu-item-3 .hover-text { --animation-color: #CCD5FF; }
+.menu-item-4 .hover-text { --animation-color: #E7BBE3; }
+.menu-item-5 .hover-text { --animation-color: #C884A6; }
+.menu-item-6 .hover-text { --animation-color: #EDE5A6; }
+.menu-item-7 .hover-text { --animation-color: #7dff63; }
+
+.hover-text {
+  position: absolute;
+  box-sizing: border-box;
+  color: var(--animation-color);
+  width: 0%;
+  inset: 0;
+  border-right: var(--border-right) solid var(--animation-color);
+  overflow: hidden;
+  transition: 0.5s;
+  -webkit-text-stroke: 1px var(--animation-color);
+}
+
+.button.active .hover-text, .button:hover .hover-text {
+  width: 100%;
+  filter: drop-shadow(0 0 15px var(--animation-color));
+}
+/*取消选中动画*/
+.button:not(.active) .hover-text {
+  transition: width 0.5s ease, filter 0.5s ease;
 }
 </style>
 
-----SideBar.vue----
+----WindowBar.vue----
 <template>
-    <el-row class="tac">
-      <el-col>
-        <el-menu class="el-menu-vertical-demo">
-          <el-menu-item index="1">
-            <router-link to="/customer" style="text-decoration: none; color: inherit;">
-            <el-icon><avatar /></el-icon>
-            <span>商家管理</span>
-          </router-link>
-          </el-menu-item>
-          <el-menu-item index="2">
-            <el-icon><list /></el-icon>
-            <span>创建订单</span>
-          </el-menu-item>
-          <el-menu-item index="3">
-            <el-icon><Search /></el-icon>
-            <span>查看订单</span>
-          </el-menu-item>
-          <el-menu-item index="4">
-            <el-icon><Printer /></el-icon>
-            <span>核销订单</span>
-          </el-menu-item>
-          <el-menu-item index="5">
-            <router-link to="/datareadme" style="text-decoration: none; color: inherit;">
-            <el-icon><Printer /></el-icon>
-            <span>数据说明</span>
-          </router-link>
-          </el-menu-item>
-        </el-menu>
-      </el-col>
-    </el-row>
-  </template>
-  
-  <script lang="ts" setup>
-  import {
-    Avatar,
-    List,
-    Search,
-    Printer,
-  } from '@element-plus/icons-vue'
-  </script> 
+  <div class="window-bar">
+    <div class="drag-region"></div>
+    <div class="window-controls">
+      <button @click="minimizeWindow" @mouseover="hoverMinimize=true" @mouseleave="hoverMinimize=false">
+        <img :src="hoverMinimize ? 'windowbar/11.png' : 'windowbar/1.png'"/>
+      </button>
+      <button @click="maximizeWindow" @mouseover="hoverMaximize=true" @mouseleave="hoverMaximize=false">
+        <img :src="hoverMaximize ? 'windowbar/22.png' : 'windowbar/2.png'"/>
+      </button>
+      <button @click="closeWindow" @mouseover="hoverClose=true" @mouseleave="hoverClose=false">
+        <img :src="hoverClose ? 'windowbar/33.png' : 'windowbar/3.png'"/>
+      </button>
+    </div>
+  </div>
+</template>
 
-  
+
+<script setup>
+import { ref } from 'vue';
+
+// 定义响应式状态
+const hoverMinimize = ref(false);
+const hoverMaximize = ref(false);
+const hoverClose = ref(false);
+
+// 定义方法
+const closeWindow = () => window.electron.closeWindow();
+const minimizeWindow = () => window.electron.minimizeWindow();
+const maximizeWindow = () => window.electron.maximizeWindow();
+</script>
+
 
 <style scoped>
-.el-menu-vertical-demo {
-  height: 100vh; 
-  display: flex; /* 使用Flex布局 */
-  flex-direction: column; /* 子元素垂直排列 */
+.window-bar {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  -webkit-app-region: drag;
+  height: 30px;
+  width: 100%;
+  background-color: #242424;
+  overflow: hidden; /* 隐藏溢出内容 */
 }
 
-.el-menu-item {
-  flex-grow: 1; /* 平分高度 */
-  display: flex; /* 使用Flex布局 */
-  align-items: center; /* 垂直居中 */
-  justify-content: center; /* 水平居中 */
-  background-color: #f5f5f5; /* 默认背景色 */
+.window-controls {
+  display: flex;
+  height: 100%; /* 确保控制按钮区域不超过窗口栏的高度 */
 }
 
-/* 不同层次的灰色 */
-.el-menu-item:nth-child(1) {
-  background: linear-gradient(180deg, #6D888F, #658689);
-}
-.el-menu-item:nth-child(2) {
-  background: linear-gradient(180deg, #658689, #5F8380);
-}
-.el-menu-item:nth-child(3) {
-  background: linear-gradient(180deg, #5F8380, #5C8077);
-}
-
-.el-menu-item:nth-child(4) {
-  background: linear-gradient(180deg, #5C8077, #5C7D6C);
+.window-controls button {
+  -webkit-app-region: no-drag;
+  background-color: #242424;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  display: flex; /* 使得 img 能够在按钮内居中 */
+  align-items: center; /* 垂直居中图标 */
+  justify-content: center; /* 水平居中图标 */
 }
 
-.el-menu-item:nth-child(5) {
-  background: linear-gradient(180deg, #5C7D6C, #578764);
+
+.window-controls button:hover img {
+  filter: none; /* 恢复图标原色 */
 }
 
-.el-menu-item.is-active {
-  color: #FFDD00; /* Set text color to black */
-  font-weight: bold; /* 设置字体加粗 */
+.window-controls button:active img,
+.window-controls button.close:hover img {
+  background-color: red; /* 这可能需要根据您的具体需求调整 */
 }
 </style>
-                                   
 
-----vite.svg----
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" class="iconify iconify--logos" width="31.88" height="32" preserveAspectRatio="xMidYMid meet" viewBox="0 0 256 257"><defs><linearGradient id="IconifyId1813088fe1fbc01fb466" x1="-.828%" x2="57.636%" y1="7.652%" y2="78.411%"><stop offset="0%" stop-color="#41D1FF"></stop><stop offset="100%" stop-color="#BD34FE"></stop></linearGradient><linearGradient id="IconifyId1813088fe1fbc01fb467" x1="43.376%" x2="50.316%" y1="2.242%" y2="89.03%"><stop offset="0%" stop-color="#FFEA83"></stop><stop offset="8.333%" stop-color="#FFDD35"></stop><stop offset="100%" stop-color="#FFA800"></stop></linearGradient></defs><path fill="url(#IconifyId1813088fe1fbc01fb466)" d="M255.153 37.938L134.897 252.976c-2.483 4.44-8.862 4.466-11.382.048L.875 37.958c-2.746-4.814 1.371-10.646 6.827-9.67l120.385 21.517a6.537 6.537 0 0 0 2.322-.004l117.867-21.483c5.438-.991 9.574 4.796 6.877 9.62Z"></path><path fill="url(#IconifyId1813088fe1fbc01fb467)" d="M185.432.063L96.44 17.501a3.268 3.268 0 0 0-2.634 3.014l-5.474 92.456a3.268 3.268 0 0 0 3.997 3.378l24.777-5.718c2.318-.535 4.413 1.507 3.936 3.838l-7.361 36.047c-.495 2.426 1.782 4.5 4.151 3.78l15.304-4.649c2.372-.72 4.652 1.36 4.15 3.788l-11.698 56.621c-.732 3.542 3.979 5.473 5.943 2.437l1.313-2.028l72.516-144.72c1.215-2.423-.88-5.186-3.54-4.672l-25.505 4.922c-2.396.462-4.435-1.77-3.759-4.114l16.646-57.705c.677-2.35-1.37-4.583-3.769-4.113Z"></path></svg>
-----vue.svg----
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" class="iconify iconify--logos" width="37.07" height="36" preserveAspectRatio="xMidYMid meet" viewBox="0 0 256 198"><path fill="#41B883" d="M204.8 0H256L128 220.8L0 0h97.92L128 51.2L157.44 0h47.36Z"></path><path fill="#41B883" d="m0 0l128 220.8L256 0h-51.2L128 132.48L50.56 0H0Z"></path><path fill="#35495E" d="M50.56 0L128 133.12L204.8 0h-47.36L128 51.2L97.92 0H50.56Z"></path></svg>
+----1.png----
+1.png is a non-text file
+----11.png----
+11.png is a non-text file
+----2.png----
+2.png is a non-text file
+----22.png----
+22.png is a non-text file
+----3.png----
+3.png is a non-text file
+----33.png----
+33.png is a non-text file
 ----index.ts----
 import { createRouter, createWebHistory } from 'vue-router'
 import Home from '../views/Home.vue'
 import About from '../views/About.vue'
-import Customer from '../views/Customer.vue'
+import Customer from '../views/Customer.vue'// 导入 AddCustomer 组件
+import CustomerAdd from '../views/CustomerAdd.vue' 
+import OrderAdd from '../views/OrderAdd.vue'// 导入 Order组件
+import OrderSubmit from '../views/OrderSubmit.vue'
+import OrderManage from '../views/OrderManage.vue'
 import DataReadMe from '../views/DataReadMe.vue'
 
 const routes = [
   { path: '/', component: Home },
+
   { path: '/about', component: About },
+
+
+    // 客户信息管理组件
   {
-    path: '/customer', // 你希望用于导航到 Customer 组件的路径
+    path: '/customer', 
     name: 'Customer',
     component: Customer
   },
+
+  { path: '/customeradd', 
+    name: 'CustomerAdd',
+    component: CustomerAdd }, 
+
+    // 订单相关组件
+    { path: '/orderadd', 
+    name: 'OrderAdd',
+    component: OrderAdd }, 
+
+    { path: '/ordersubmit', 
+    name: 'OrderSubmit',
+    component: OrderSubmit }, 
+
+    { path: '/ordermanage', 
+    name: 'OrderManage',
+    component: OrderManage }, 
+
   {
     path: '/datareadme', // 你希望用于导航到 DataReadMe 组件的路径
     name: 'DataReadMe',
@@ -1251,6 +1620,17 @@ declare module '*.vue' {
 ----Customer.vue----
 <script lang="ts" setup>
 import { ref } from 'vue'
+import { useRouter } from 'vue-router'; // 导入 useRouter
+
+
+
+// 初始化 router 实例
+const router = useRouter();
+
+// 新增客户按钮点击事件处理函数
+const navigateToAddCustomer = () => {
+  router.push('/customeradd'); // 使用 router.push 跳转到 AddCustomer 视图
+};
 
 
 /*设置无限滚动*/
@@ -1267,7 +1647,7 @@ const fillRatio = ref(30)
 
 /*设置添加商家按钮样式*/
 const buttonStyle = ref({
-  background: 'linear-gradient(90deg, #6D888F, #5C7D6C)',
+  background: 'linear-gradient(90deg, #051937, #004d7a, #008793, #00bf72, #a8eb12)',
 });
 </script>
 
@@ -1276,7 +1656,7 @@ const buttonStyle = ref({
     <div class="common-layout">
       <el-container>
         <el-header class="custom-header">
-          <el-button :style="buttonStyle" class="custom-active-button" type="info">新增客户</el-button>
+          <el-button :style="buttonStyle" class="custom-active-button" type="info" @click="navigateToAddCustomer">新增客户</el-button>
         </el-header>
         <el-main v-infinite-scroll="load" class="main-content">
             <el-space fill      
@@ -1289,7 +1669,7 @@ const buttonStyle = ref({
           <el-button class="button" text>修改信息</el-button>
         </div>
       </template>
-      <div v-for="o in 4" :key="o" class="text item">
+      <div v-for="o in 5" :key="o" class="text item">
         {{ 'List item ' + o }}
       </div>
     </el-card>
@@ -1329,18 +1709,28 @@ const buttonStyle = ref({
 }
 
   .main-content {
-  overflow: hidden;
-}
+    overflow: hidden;
+    overflow-y: auto; /* 当内容超过元素高度时显示滚动条，否则不显示 */
+    max-height: 100vh; /* 设置最大高度为视口的高度 */
+    /* 保留你的其他样式 */
+  }
+
 
 .custom-active-button{
   color: '#FFDD00', /* 设置文本颜色为白色*/
 }
 
 .custom-active-button:active {
-  color: #FFDD00; /* 黄色文本 */
+  color: #050505; /* 黑色文本 */
   font-weight: bold; /* 加粗字体 */
 }
   </style>
+----CustomerAdd.vue----
+<template>22</template>
+
+<script></script>
+
+<style></style>
 ----DataReadMe.vue----
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
@@ -1395,6 +1785,24 @@ const submitChanges = () => {
   </style>
   
 ----Home.vue----
+<template>22</template>
+
+<script></script>
+
+<style></style>
+----OrderAdd.vue----
+<template>22</template>
+
+<script></script>
+
+<style></style>
+----OrderManage.vue----
+<template>22</template>
+
+<script></script>
+
+<style></style>
+----OrderSubmit.vue----
 <template>22</template>
 
 <script></script>

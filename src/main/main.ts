@@ -2,13 +2,15 @@
 import { app, BrowserWindow, ipcMain } from 'electron';
 import path from 'path';
 import { initDataReadMeModule } from './electron-utils/DataReadMe';
+import { setupWindowControls } from './electron-utils/WindowBar';
 
 // 设置窗口图标路径
 const iconPath = process.env.NODE_ENV === 'development'
-  ? path.join(__dirname, 'static', 'buttons.ico')
-  : path.join(app.getAppPath(), 'static', 'buttons.ico');
+  ? path.join(__dirname, 'static', 'logo.ico')
+  : path.join(app.getAppPath(), 'static', 'logo.ico');
 
 let mainWindow;
+
 
 function createWindow() {
   mainWindow = new BrowserWindow({
@@ -34,30 +36,15 @@ function createWindow() {
   }
 }
 
-function handleMinimize() {
-  mainWindow.minimize();
-}
 
 app.whenReady().then(() => {
   createWindow();
   initDataReadMeModule();
-  ipcMain.on('minimize-window', () => {
-    mainWindow.minimize();
-  });
-
-  ipcMain.on('maximize-window', () => {
-    if (mainWindow.isMaximized()) {
-      mainWindow.restore();
-    } else {
-      mainWindow.maximize();
-    }
-  });
-
-  ipcMain.on('close-window', () => {
-    mainWindow.close();
-  });
+  // 将 windowBar 传递给 IPC 事件处理函数
+  setupWindowControls(mainWindow);
 });
 
 app.on('window-all-closed', function () {
   if (process.platform !== 'darwin') app.quit();
 });
+

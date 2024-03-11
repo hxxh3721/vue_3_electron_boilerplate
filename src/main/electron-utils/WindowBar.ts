@@ -1,34 +1,14 @@
-// WindowBar.ts
-import { BrowserWindow, ipcMain } from 'electron';
+// 在主进程中使用
+import { ipcMain, BrowserWindow } from 'electron';
 
-function handleMinimize(mainWindow: BrowserWindow) {
-  mainWindow.minimize();
-}
-
-function handleToggleMaximizeRestore(mainWindow: BrowserWindow) {
-  if (mainWindow.isMaximized()) {
-    mainWindow.unmaximize();
-  } else {
-    mainWindow.maximize();
-  }
-}
-
-function handleClose(mainWindow: BrowserWindow) {
-  mainWindow.close();
-}
-
-export function setupWindowControl(mainWindow: BrowserWindow) {
-  console.log('Setting up window controls'); // 添加调试信息
-  ipcMain.on('minimize-window', () => {
-    console.log('Received minimize-window event'); // 添加调试信息
-    handleMinimize(mainWindow);
+export const setupWindowControls = (mainWindow: BrowserWindow) => {
+  ipcMain.on('close-window', () => mainWindow.close());
+  ipcMain.on('minimize-window', () => mainWindow.minimize());
+  ipcMain.on('maximize-window', () => {
+    if (mainWindow.isMaximized()) {
+      mainWindow.restore();
+    } else {
+      mainWindow.maximize();
+    }
   });
-  ipcMain.on('toggle-maximize-restore', () => {
-    console.log('Received toggle-maximize-restore event'); // 添加调试信息
-    handleToggleMaximizeRestore(mainWindow);
-  });
-  ipcMain.on('close-window', () => {
-    console.log('Received close-window event'); // 添加调试信息
-    handleClose(mainWindow);
-  });
-}
+};

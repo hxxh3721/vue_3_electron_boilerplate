@@ -4,6 +4,7 @@ import Components from 'unplugin-vue-components/vite'
 import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
 import vue from '@vitejs/plugin-vue'
 import vuePlugin from '@vitejs/plugin-vue';
+import path from 'path';
 
 const Path = require('path');
 const { defineConfig } = require('vite');
@@ -19,6 +20,12 @@ const config = defineConfig({
         port: 8080, // 指定服务器端口
     },
     open: false, // 是否在服务器启动时自动打开浏览器
+    //路径优化
+    resolve: {
+    alias: {
+      '@': path.resolve(__dirname, 'src/renderer') }
+      },
+
     // 构建配置
     build: {
         outDir: Path.join(__dirname, 'build', 'renderer'), // 指定输出目录

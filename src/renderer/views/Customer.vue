@@ -1,5 +1,16 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
+import { useRouter } from 'vue-router'; // 导入 useRouter
+
+
+
+// 初始化 router 实例
+const router = useRouter();
+
+// 新增客户按钮点击事件处理函数
+const navigateToAddCustomer = () => {
+  router.push('/customeradd'); // 使用 router.push 跳转到 AddCustomer 视图
+};
 
 
 /*设置无限滚动*/
@@ -16,7 +27,7 @@ const fillRatio = ref(30)
 
 /*设置添加商家按钮样式*/
 const buttonStyle = ref({
-  background: 'linear-gradient(90deg, #6D888F, #5C7D6C)',
+  background: 'linear-gradient(90deg, #051937, #004d7a, #008793, #00bf72, #a8eb12)',
 });
 </script>
 
@@ -25,7 +36,7 @@ const buttonStyle = ref({
     <div class="common-layout">
       <el-container>
         <el-header class="custom-header">
-          <el-button :style="buttonStyle" class="custom-active-button" type="info">新增客户</el-button>
+          <el-button :style="buttonStyle" class="custom-active-button" type="info" @click="navigateToAddCustomer">新增客户</el-button>
         </el-header>
         <el-main v-infinite-scroll="load" class="main-content">
             <el-space fill      
@@ -38,7 +49,7 @@ const buttonStyle = ref({
           <el-button class="button" text>修改信息</el-button>
         </div>
       </template>
-      <div v-for="o in 4" :key="o" class="text item">
+      <div v-for="o in 5" :key="o" class="text item">
         {{ 'List item ' + o }}
       </div>
     </el-card>
@@ -78,15 +89,19 @@ const buttonStyle = ref({
 }
 
   .main-content {
-  overflow: hidden;
-}
+    overflow: hidden;
+    overflow-y: auto; /* 当内容超过元素高度时显示滚动条，否则不显示 */
+    max-height: 100vh; /* 设置最大高度为视口的高度 */
+    /* 保留你的其他样式 */
+  }
+
 
 .custom-active-button{
   color: '#FFDD00', /* 设置文本颜色为白色*/
 }
 
 .custom-active-button:active {
-  color: #FFDD00; /* 黄色文本 */
+  color: #050505; /* 黑色文本 */
   font-weight: bold; /* 加粗字体 */
 }
   </style>

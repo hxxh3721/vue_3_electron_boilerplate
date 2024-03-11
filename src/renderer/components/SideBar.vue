@@ -2,45 +2,67 @@
   <el-row class="sidebar">
     <el-col>
       <el-menu class="menu">
+        
         <!-- 第一个菜单项 -->
         <el-menu-item index="1" class="menu-item menu-item-1">
-          <router-link to="/customer" class="button" data-text="商家管理" active-class="active">
-            <span class="actual-text">&nbsp;商家管理&nbsp;</span>
-            <span class="hover-text">&nbsp;商家管理&nbsp;</span>
+          <router-link to="/customer" class="button" data-text="客户信息" active-class="active">
+            <span class="actual-text">&nbsp;客户信息&nbsp;</span>
+            <span class="hover-text">&nbsp;客户信息&nbsp;</span>
           </router-link>
         </el-menu-item>
 
         <!-- 第二个菜单项 -->
         <el-menu-item index="2" class="menu-item menu-item-2">
-          <router-link to="/orders" class="button" data-text="订单管理" active-class="active">
+          <router-link to="/orderadd" class="button" data-text="订单录入" active-class="active">
+            <span class="actual-text">&nbsp;订单录入&nbsp;</span>
+            <span class="hover-text">&nbsp;订单录入&nbsp;</span>
+          </router-link>
+        </el-menu-item>
+
+        
+        <!-- 第三个菜单项 -->
+        <el-menu-item index="3" class="menu-item menu-item-3">
+          <router-link to="/ordersubmit" class="button" data-text="订单结算" active-class="active">
+            <span class="actual-text">&nbsp;订单结算&nbsp;</span>
+            <span class="hover-text">&nbsp;订单结算&nbsp;</span>
+          </router-link>
+        </el-menu-item>
+
+
+        <!-- 第四个菜单项 -->
+        <el-menu-item index="4" class="menu-item menu-item-4">
+          <router-link to="/ordermanage" class="button" data-text="订单管理" active-class="active">
             <span class="actual-text">&nbsp;订单管理&nbsp;</span>
             <span class="hover-text">&nbsp;订单管理&nbsp;</span>
           </router-link>
         </el-menu-item>
 
-        <!-- 第三个菜单项 -->
-        <el-menu-item index="3" class="menu-item menu-item-3">
-          <router-link to="/products" class="button" data-text="产品管理" active-class="active">
-            <span class="actual-text">&nbsp;产品管理&nbsp;</span>
-            <span class="hover-text">&nbsp;产品管理&nbsp;</span>
-          </router-link>
-        </el-menu-item>
-
-        <!-- 第四个菜单项 -->
-        <el-menu-item index="4" class="menu-item menu-item-4">
+        <!-- 第五个菜单项 -->
+        <el-menu-item index="5" class="menu-item menu-item-5">
           <router-link to="/analytics" class="button" data-text="分析报告" active-class="active">
             <span class="actual-text">&nbsp;分析报告&nbsp;</span>
             <span class="hover-text">&nbsp;分析报告&nbsp;</span>
           </router-link>
         </el-menu-item>
 
-        <!-- 第五个菜单项 -->
-        <el-menu-item index="5" class="menu-item menu-item-5">
-          <router-link to="/datareadme" class="button" data-text="客户数据操作日志" active-class="active">
-            <span class="actual-text">&nbsp;客户数据操作日志&nbsp;</span>
-            <span class="hover-text">&nbsp;客户数据操作日志&nbsp;</span>
+        <!-- 第六个菜单项 -->
+        <el-menu-item index="6" class="menu-item menu-item-6">
+          <router-link to="/datareadme" class="button" data-text="数据备份" active-class="active">
+            <span class="actual-text">&nbsp;数据备份&nbsp;</span>
+            <span class="hover-text">&nbsp;数据备份&nbsp;</span>
           </router-link>
         </el-menu-item>
+
+
+        <!-- 第七个菜单项 -->
+        <el-menu-item index="7" class="menu-item menu-item-7">
+          <router-link to="/others" class="button" data-text="其它" active-class="active">
+            <span class="actual-text">&nbsp;其它&nbsp;</span>
+            <span class="hover-text">&nbsp;其它&nbsp;</span>
+          </router-link>
+        </el-menu-item>
+
+
       </el-menu>
     </el-col>
   </el-row>
@@ -64,7 +86,7 @@
 }
 
 .menu-item {
-  height: 50px; /* 设置每个菜单项的高度 */
+  height: 100px; /* 设置每个菜单项的高度 */
   border-right: none; /* 去除右边框 */
   --el-menu-item-height: 30px;
 }
@@ -93,11 +115,13 @@
 }
 
 /* 定义不同菜单项的动画颜色 */
-.menu-item-1 .hover-text { --animation-color: #37FF8B; }
-.menu-item-2 .hover-text { --animation-color: #FF5733; }
-.menu-item-3 .hover-text { --animation-color: #FFC300; }
-.menu-item-4 .hover-text { --animation-color: #DAF7A6; }
-.menu-item-5 .hover-text { --animation-color: #581845; }
+.menu-item-1 .hover-text { --animation-color: #52B788; }
+.menu-item-2 .hover-text { --animation-color: #7CC6FE; }
+.menu-item-3 .hover-text { --animation-color: #CCD5FF; }
+.menu-item-4 .hover-text { --animation-color: #E7BBE3; }
+.menu-item-5 .hover-text { --animation-color: #C884A6; }
+.menu-item-6 .hover-text { --animation-color: #EDE5A6; }
+.menu-item-7 .hover-text { --animation-color: #7dff63; }
 
 .hover-text {
   position: absolute;
